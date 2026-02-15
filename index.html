@@ -2,81 +2,427 @@
 <html>
 
 <head>
-	<title>idk</title>
+	<title>search the oier</title>
+	<meta charset="UTF-8">
+	<style>
+		td {
+			text-align: center;
+		}
+	</style>
+	<script>
+		const contests =
+			[
+				"NOI2004",
+				"NOI2005",
+				"NOI2006",
+				"NOI2007",
+				"NOI2008",
+				"NOIP2008 提高",
+				"NOI2009",
+				"NOIP2009 提高",
+				"CTSC2010",
+				"APIO2010",
+				"NOI2010",
+				"NOI2010 D 类",
+				"IOI2010",
+				"NOIP2010 提高",
+				"CTSC2011",
+				"APIO2011",
+				"NOI2011",
+				"NOI2011 D 类",
+				"IOI2011",
+				"NOIP2011 提高",
+				"CTSC2012",
+				"APIO2012",
+				"NOI2012",
+				"NOI2012 D 类",
+				"IOI2012",
+				"NOIP2012 提高",
+				"CTSC2013",
+				"APIO2013",
+				"NOI2013",
+				"NOI2013 D 类",
+				"IOI2013",
+				"NOIP2013 提高",
+				"NOIP2013 普及",
+				"CTSC2014",
+				"APIO2014",
+				"NOI2014",
+				"NOI2014 D 类",
+				"IOI2014",
+				"NOIP2014 提高",
+				"NOIP2014 普及",
+				"WC2015",
+				"CTSC2015",
+				"APIO2015",
+				"NOI2015",
+				"NOI2015 D 类",
+				"IOI2015",
+				"NOIP2015 提高",
+				"NOIP2015 普及",
+				"WC2016",
+				"CTSC2016",
+				"APIO2016",
+				"NOI2016",
+				"NOI2016 D 类",
+				"IOI2016",
+				"NOIP2016 提高",
+				"NOIP2016 普及",
+				"WC2017",
+				"CTSC2017",
+				"APIO2017",
+				"NOI2017",
+				"NOI2017 D 类",
+				"IOI2017",
+				"NOIP2017 提高",
+				"NOIP2017 普及",
+				"WC2018",
+				"CTSC2018",
+				"APIO2018",
+				"NOI2018",
+				"NOI2018 D 类",
+				"IOI2018",
+				"NOIP2018 提高",
+				"NOIP2018 普及",
+				"WC2019",
+				"CTS2019",
+				"APIO2019",
+				"NOI2019",
+				"NOI2019 夏令营",
+				"IOI2019",
+				"CSP2019 提高",
+				"CSP2019 入门",
+				"WC2020",
+				"APIO2020",
+				"NOI2020",
+				"NOI2020 夏令营",
+				"IOI2020",
+				"CSP2020 提高",
+				"CSP2020 入门",
+				"NOIP2020",
+				"WC2021",
+				"APIO2021",
+				"IOI2021",
+				"NOI2021",
+				"NOI2021 夏令营",
+				"CSP2021 提高",
+				"CSP2021 入门",
+				"NOIP2021",
+				"WC2022",
+				"NGOI2022",
+				"APIO2022",
+				"APIO2022 线上",
+				"IOI2022",
+				"NOI2022",
+				"NOI2022 夏令营",
+				"CSP2022 提高",
+				"CSP2022 入门",
+				"NOIP2022",
+				"WC2023",
+				"春季测试 2023",
+				"NGOI2023",
+				"APIO2023",
+				"APIO2023 线上",
+				"NOI2023",
+				"NOI2023 夏令营",
+				"IOI2023",
+				"CSP2023 提高",
+				"CSP2023 入门",
+				"NOIP2023",
+				"NGOI2024",
+				"WC2024",
+				"APIO2024",
+				"NOI2024",
+				"NOI2024 夏令营",
+				"IOI2024",
+				"CSP2024 提高",
+				"CSP2024 入门",
+				"NOIP2024",
+				"NGOI2025",
+				"WC2025",
+				"APIO2025",
+				"NOI2025",
+				"NOI2025 夏令营",
+				"IOI2025",
+				"CSP2025 提高",
+				"CSP2025 入门",
+				"NOIP2025",
+				"NGOI2026",
+				"WC2026"
+			];
+
+		function levenshtein(s1, s2)
+		{
+			const matrix = [];
+			for (let i = 0; i <= s1.length; i++)
+			{
+				matrix[i] = [i];
+			}
+			for (let j = 1; j <= s2.length; j++)
+			{
+				matrix[0][j] = j;
+			}
+			for (let i = 1; i <= s1.length; i++)
+			{
+				for (let j = 1; j <= s2.length; j++)
+				{
+					if (s1.charAt(i - 1) === s2.charAt(j - 1))
+						matrix[i][j] = matrix[i - 1][j - 1];
+					else
+						matrix[i][j] = Math.min(
+							matrix[i - 1][j - 1] + 2, // 替换
+							matrix[i][j - 1] + 1, // 插入
+							matrix[i - 1][j] + 1 // 删除
+						);
+				}
+			}
+			return matrix[s1.length][s2.length];
+		}
+	</script>
 </head>
 
 <body>
-	Remember somebody which used to be my deskmate.
-	<br /><br />
-	Writen by hyn.
-	<br /><br />
-	（本文不传播任何负面价值取向）
-	<br /><br />
-	也不知道是咋了
-	<br /><br />
-	一个认识的女生本来退出信竞了，教练劝退加上她自己本身不想学。家长硬逼着学呗，具体不是很了解，到了期中考试考完才听说她还没考生物期中就跳楼了，人不在了
-	<br /><br />
-	初三
-	<br /><br />
-	感觉这个社会太病态了
-	<br /><br />
-	身边已经有不下8个认识的人，因为学习的压力和家庭氛围等，跳楼致死或重伤，自残，退学休学，心理疾病
-	<br /><br />
-	自己也或多或少有过极端想法吧，毕竟双重人格很难控制，但我至少有一个算幸福的家庭，一群算好的兄弟，那个一直陪着我的人，加上自己还勉强看得过去的综合，竞赛，游戏水平，这世界，值得我留恋的好像很多……
-	<br /><br />
-	可是他们呢
-	<br /><br />
-	学习的初衷是什么，努力的初衷是什么
-	<br /><br />
-	功利来说，考好大学，找好工作，过好日子，长远来看，让自己的这唯一一场人生更有意义
-	<br /><br />
-	可是在学习的途中就放弃或者离开，这不比没学出来要更加可惜和遗憾吗，不就违背了学习的初衷吗
-	<br /><br />
-	我不理解
-	<br /><br />
-	我感到深深的遗憾
-	<br /><br />
-	冷静分析，家庭或许是个很重要的原因
-	<br /><br />
-	就现在的社会，清华北大似乎是所有初高中生以及他们家长的目标
-	<br /><br />
-	至少对于我们这些竞赛生来说吧
-	<br /><br />
-	对于学生本身来说，没有哪个人不知道适当放松，劳逸结合，学累了就休息，精力充沛了就继续学。对于我们来说，这是共识
-	<br /><br />
-	家长呢
-	<br /><br />
-	一味的施压，效果好吗
-	<br /><br />
-	竞赛出不来了，也只能盯着这一条路吗
-	<br /><br />
-	起码我不这么认为
-	<br /><br />
-	我们有自己的想法，这肯定是最适合我们自己的
-	<br /><br />
-	我们自己指定的学习计划，也会是最契合我们个人状况的
-	<br /><br />
-	家长，说过点，只起领导作用
-	<br /><br />
-	不明白那些非要在后面推进孩子学习的家长是怎么想的
-	<br /><br />
-	我们把人生比作在大海上航行，每个人都是一叶小舟
-	<br /><br />
-	顺流而行的人已然颓废，我们暂且不论
-	<br /><br />
-	逆流而行的那些人中，或许所有人都能扛住那些小小的风浪，但当真正的巨浪来临时，一味地，不切实际地去让自己的孩子试图跨越它，只会适得其反
-	<br /><br />
-	能看到这篇文章的同志们，不要有极端心理，永远朝着自己认为正确的方向走，那你就永远正确
-	<br /><br />
-	压力太大，适当放一放，和身边的人倾诉倾诉，等到你真正觉得舒适的时候，再继续前进，会远远比背负着压力前进走得更远
-	<br /><br />
-	如果能看的这篇文章的家长，请不要因为学习而伤害你们的孩子
-	<br /><br />
-	谨此，悼念
-	<br /><br />
-	愿逝者安息
-	<br /><br />
-	愿生者向阳
+	<table id="contest-list" style="border: 1px solid #ccc;"></table>
+	<br />
+	<div style="font-size: small;">点击“不限”可以设置分数或奖项的限制。</div>
+	<br />
+	搜索比赛以添加到列表中：<input type="text" id="contest-input" onkeyup="searchContest()" placeholder="比赛名称" />
+	<ul id="search-result"></ul>
+	<br />
+	<button onclick="generate()">生成</button>
+	<button onclick="copyCode()">复制代码</button>
+	<button onclick="openOierDB()">打开OIerDB</button>
+	<br />
+	<pre id="code"></pre>
+	<div id="error-list"></div>
+	<script>
+		function removeError()
+		{
+			let list = document.getElementById("error-list");
+			list.removeChild(list.firstElementChild);
+		}
+
+		function showError(msg, color)
+		{
+			let list = document.getElementById("error-list");
+			let p = document.createElement("p");
+			p.innerHTML = msg;
+			p.style.color = color;
+			list.appendChild(p);
+			setTimeout(removeError, 3000);
+		}
+
+		class limit
+		{
+			constructor()
+			{
+				this.flag = false;
+				this.score = -1;
+				this.level = "";
+			}
+		}
+		let lim = [];
+		for (let i = 0; i < contests.length; ++i)
+			lim.push(new limit());
+
+		function updateContestList()
+		{
+			let list = document.getElementById("contest-list");
+			list.innerHTML = "";
+			let header = document.createElement("tr");
+			let nameHeader = document.createElement("th");
+			nameHeader.innerHTML = "比赛名称";
+			nameHeader.style.width = "120px";
+			let scoreHeader = document.createElement("th");
+			scoreHeader.innerHTML = "得分";
+			scoreHeader.style.width = "50px";
+			let levelHeader = document.createElement("th");
+			levelHeader.innerHTML = "奖项";
+			levelHeader.style.width = "50px";
+			let removeHeader = document.createElement("th");
+			removeHeader.innerHTML = "操作";
+			removeHeader.style.width = "50px";
+			header.appendChild(nameHeader);
+			header.appendChild(scoreHeader);
+			header.appendChild(levelHeader);
+			header.appendChild(removeHeader);
+			list.appendChild(header);
+			for (let i = 0; i < contests.length; ++i)
+				if (lim[i].flag)
+				{
+					let item = document.createElement("tr");
+					let name = document.createElement("td");
+					name.innerHTML = contests[i];
+					let score = document.createElement("td");
+					let div = document.createElement("div");
+					div.innerHTML = lim[i].score == -1 ? "不限" : lim[i].score;
+					div.onclick = () => { inputScore_start(i); };
+					score.id = `score${i}`;
+					score.appendChild(div);
+					let level = document.createElement("td");
+					div = document.createElement("div");
+					div.innerHTML = lim[i].level == "" ? "不限" : lim[i].level;
+					div.onclick = () => { inputLevel_start(i); };
+					level.id = `level${i}`;
+					level.appendChild(div);
+					let removeButton = document.createElement("td");
+					removeButton.innerHTML = `<button onclick="removeContest(${i})">删除</button>`;
+					item.appendChild(name);
+					item.appendChild(score);
+					item.appendChild(level);
+					item.appendChild(removeButton);
+					list.appendChild(item);
+				}
+		}
+		updateContestList();
+
+		function removeContest(id)
+		{
+			lim[id].flag = false;
+			updateContestList();
+		}
+
+		function addContest(id)
+		{
+			if (lim[id].flag)
+				showError("该比赛已经添加到列表中了", "red");
+			else
+				lim[id].flag = true;
+			updateContestList();
+		}
+
+		function inputScore_start(id)
+		{
+			let element = document.getElementById(`score${id}`);
+			let input = document.createElement("input");
+			input.type = "number";
+			input.value = lim[id].score;
+			input.onblur = () => { inputScore_end(id, (Number)(input.value)); };
+			element.innerHTML = "";
+			element.appendChild(input);
+			input.focus();
+		}
+
+		function inputScore_end(id, score)
+		{
+			lim[id].score = score;
+			updateContestList();
+		}
+
+		function inputLevel_start(id)
+		{
+			let element = document.getElementById(`level${id}`);
+			let select = document.createElement("select");
+			let option = document.createElement("option");
+			option.value = "";
+			option.innerHTML = "不限";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "金牌";
+			option.innerHTML = "金牌";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "银牌";
+			option.innerHTML = "银牌";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "铜牌";
+			option.innerHTML = "铜牌";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "一等奖";
+			option.innerHTML = "一等奖";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "二等奖";
+			option.innerHTML = "二等奖";
+			select.appendChild(option);
+			option = document.createElement("option");
+			option.value = "三等奖";
+			option.innerHTML = "三等奖";
+			select.appendChild(option);
+
+			element.innerHTML = "";
+			element.appendChild(select);
+			select.onblur = () => { inputLevel_end(id, select.value); };
+			select.value = lim[id].level;
+			select.focus();
+		}
+
+		function inputLevel_end(id, level)
+		{
+			lim[id].level = level;
+			updateContestList();
+		}
+
+		function searchContest()
+		{
+			const input = document.getElementById("contest-input").value.trim().toUpperCase();
+			let result = [];
+			for (let i = 0; i < contests.length; ++i)
+				result.push({ name: contests[i], id: i });
+			result.sort((a, b) => levenshtein(a.name, input) - levenshtein(b.name, input));
+			let list = document.getElementById("search-result");
+			list.innerHTML = "";
+			for (let i = 0; i < 10; ++i)
+			{
+				let item = document.createElement("li");
+				item.innerHTML = `${result[i].name}&nbsp;&nbsp;`;
+				let button = document.createElement("button");
+				button.innerHTML = "Add";
+				button.onclick = () => { addContest(result[i].id); };
+				item.appendChild(button);
+				list.appendChild(item);
+			}
+		}
+
+		function generate()
+		{
+			let information = [];
+			for (let i = 0; i < lim.length; ++i)
+				if (lim[i].flag)
+					information.push({ id: i, score: lim[i].score, level: lim[i].level });
+			document.getElementById("code").innerHTML = `/** @param {OIerDb} db */
+export default (db) =>
+{
+	return db.oiers.filter((oier) =>
+	{
+		const information = JSON.parse(\`${JSON.stringify(information)}\`);
+		let res = true;
+		for (let each of information)
+		{
+			let exist = false;
+			for (let record of oier.records)
+				if (record.contest.id === each.id)
+					if (each.score === -1 || record.score === each.score)
+						if (each.level === "" || record.level === each.level)
+							exist = true;
+			if (!exist)
+				res = false;
+		}
+		return res;
+	}).sort((a, b) => a.records.length - b.records.length);
+};`;
+		}
+
+		async function copyCode()
+		{
+			try
+			{
+				await navigator.clipboard.writeText(document.getElementById("code").innerHTML);
+				showError("代码已复制到剪贴板", "green");
+			}
+			catch (e)
+			{
+				showError(`复制失败，请手动复制。错误信息：${e}`, "red");
+			}
+		}
+
+		function openOierDB()
+		{
+			window.open(`https://www.xn--vuqs4zq3d.com/custom-search`);
+		}
+	</script>
 </body>
 
 </html>
