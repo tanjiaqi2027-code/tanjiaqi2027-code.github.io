@@ -472,31 +472,31 @@
             }
         });
 
-        // function triggerZax() {
-        //     clearAll();
+        function triggerZax() {
+            clearAll();
 
-        //     const zaxMsg = document.getElementById('zax-msg') || document.body; // 兼容处理
-        //     zaxMsg.style.opacity = "1";
+            const zaxMsg = document.getElementById('zax-msg') || document.body; // 兼容处理
+            zaxMsg.style.opacity = "1";
 
-        //     const count = 100; // 增加采样点，线条更致密
-        //     for (let i = 0; i < count; i++) {
-        //         const t = (i / count) * Math.PI * 2;
+            const count = 100; // 增加采样点，线条更致密
+            for (let i = 0; i < count; i++) {
+                const t = (i / count) * Math.PI * 2;
 
-        //         // 更加饱满的爱心方程
-        //         const x = 16 * Math.pow(Math.sin(t), 3);
-        //         const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+                // 更加饱满的爱心方程
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
 
-        //         // 这里的 scale 决定大小，0.6 比较适合屏幕
-        //         const scale = 0.6;
-        //         const pos = new THREE.Vector3(x * scale, y * scale, 0);
+                // 这里的 scale 决定大小，0.6 比较适合屏幕
+                const scale = 0.6;
+                const pos = new THREE.Vector3(x * scale, y * scale, 0);
 
-        //         // 【核心】第三个参数传 true，让原子在生成后不受斥力干扰
-        //         addAtom('O', pos, true);
-        //     }
+                // 【核心】第三个参数传 true，让原子在生成后不受斥力干扰
+                addAtom('O', pos, true);
+            }
 
-        //     // 3秒后恢复动力学（可选，让爱心慢慢散开，或者注释掉保持永恒）
-        //     // setTimeout(() => { atoms.forEach(a => a.isStatic = false); }, 3000);
-        // }
+            // 3秒后恢复动力学（可选，让爱心慢慢散开，或者注释掉保持永恒）
+            // setTimeout(() => { atoms.forEach(a => a.isStatic = false); }, 3000);
+        }
 
         function animate() {
             requestAnimationFrame(animate);
