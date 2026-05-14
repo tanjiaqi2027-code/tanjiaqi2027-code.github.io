@@ -1,428 +1,489 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
-	<title>search the oier</title>
-	<meta charset="UTF-8">
-	<style>
-		td {
-			text-align: center;
-		}
-	</style>
-	<script>
-		const contests =
-			[
-				"NOI2004",
-				"NOI2005",
-				"NOI2006",
-				"NOI2007",
-				"NOI2008",
-				"NOIP2008 提高",
-				"NOI2009",
-				"NOIP2009 提高",
-				"CTSC2010",
-				"APIO2010",
-				"NOI2010",
-				"NOI2010 D 类",
-				"IOI2010",
-				"NOIP2010 提高",
-				"CTSC2011",
-				"APIO2011",
-				"NOI2011",
-				"NOI2011 D 类",
-				"IOI2011",
-				"NOIP2011 提高",
-				"CTSC2012",
-				"APIO2012",
-				"NOI2012",
-				"NOI2012 D 类",
-				"IOI2012",
-				"NOIP2012 提高",
-				"CTSC2013",
-				"APIO2013",
-				"NOI2013",
-				"NOI2013 D 类",
-				"IOI2013",
-				"NOIP2013 提高",
-				"NOIP2013 普及",
-				"CTSC2014",
-				"APIO2014",
-				"NOI2014",
-				"NOI2014 D 类",
-				"IOI2014",
-				"NOIP2014 提高",
-				"NOIP2014 普及",
-				"WC2015",
-				"CTSC2015",
-				"APIO2015",
-				"NOI2015",
-				"NOI2015 D 类",
-				"IOI2015",
-				"NOIP2015 提高",
-				"NOIP2015 普及",
-				"WC2016",
-				"CTSC2016",
-				"APIO2016",
-				"NOI2016",
-				"NOI2016 D 类",
-				"IOI2016",
-				"NOIP2016 提高",
-				"NOIP2016 普及",
-				"WC2017",
-				"CTSC2017",
-				"APIO2017",
-				"NOI2017",
-				"NOI2017 D 类",
-				"IOI2017",
-				"NOIP2017 提高",
-				"NOIP2017 普及",
-				"WC2018",
-				"CTSC2018",
-				"APIO2018",
-				"NOI2018",
-				"NOI2018 D 类",
-				"IOI2018",
-				"NOIP2018 提高",
-				"NOIP2018 普及",
-				"WC2019",
-				"CTS2019",
-				"APIO2019",
-				"NOI2019",
-				"NOI2019 夏令营",
-				"IOI2019",
-				"CSP2019 提高",
-				"CSP2019 入门",
-				"WC2020",
-				"APIO2020",
-				"NOI2020",
-				"NOI2020 夏令营",
-				"IOI2020",
-				"CSP2020 提高",
-				"CSP2020 入门",
-				"NOIP2020",
-				"WC2021",
-				"APIO2021",
-				"IOI2021",
-				"NOI2021",
-				"NOI2021 夏令营",
-				"CSP2021 提高",
-				"CSP2021 入门",
-				"NOIP2021",
-				"WC2022",
-				"NGOI2022",
-				"APIO2022",
-				"APIO2022 线上",
-				"IOI2022",
-				"NOI2022",
-				"NOI2022 夏令营",
-				"CSP2022 提高",
-				"CSP2022 入门",
-				"NOIP2022",
-				"WC2023",
-				"春季测试 2023",
-				"NGOI2023",
-				"APIO2023",
-				"APIO2023 线上",
-				"NOI2023",
-				"NOI2023 夏令营",
-				"IOI2023",
-				"CSP2023 提高",
-				"CSP2023 入门",
-				"NOIP2023",
-				"NGOI2024",
-				"WC2024",
-				"APIO2024",
-				"NOI2024",
-				"NOI2024 夏令营",
-				"IOI2024",
-				"CSP2024 提高",
-				"CSP2024 入门",
-				"NOIP2024",
-				"NGOI2025",
-				"WC2025",
-				"APIO2025",
-				"NOI2025",
-				"NOI2025 夏令营",
-				"IOI2025",
-				"CSP2025 提高",
-				"CSP2025 入门",
-				"NOIP2025",
-				"NGOI2026",
-				"WC2026"
-			];
+    <title>OIerDB 脚本生成器</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-hover: #2980b9;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+        }
 
-		function levenshtein(s1, s2)
-		{
-			const matrix = [];
-			for (let i = 0; i <= s1.length; i++)
-			{
-				matrix[i] = [i];
-			}
-			for (let j = 1; j <= s2.length; j++)
-			{
-				matrix[0][j] = j;
-			}
-			for (let i = 1; i <= s1.length; i++)
-			{
-				for (let j = 1; j <= s2.length; j++)
-				{
-					if (s1.charAt(i - 1) === s2.charAt(j - 1))
-						matrix[i][j] = matrix[i - 1][j - 1];
-					else
-						matrix[i][j] = Math.min(
-							matrix[i - 1][j - 1] + 2, // 替换
-							matrix[i][j - 1] + 1, // 插入
-							matrix[i - 1][j] + 1 // 删除
-						);
-				}
-			}
-			return matrix[s1.length][s2.length];
-		}
-	</script>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #7f8c8d;
+            font-weight: 600;
+            padding: 12px;
+            text-align: center;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #f1f7fd;
+        }
+
+        .clickable-cell {
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        /* 搜索框与列表 */
+        .search-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+        }
+
+        #search-result {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            background: #fff;
+        }
+
+        #search-result li {
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        #search-result li:last-child {
+            border-bottom: none;
+        }
+
+        /* 按钮样式 */
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-generate {
+            padding: 12px 24px;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+            background-color: #2ecc71;
+        }
+
+        .btn-generate:hover {
+            background-color: #27ae60;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .action-btns button {
+            flex: 1;
+        }
+
+        /* 代码预览区 */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 20px;
+            min-height: 50px;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+        }
+
+        #error-list {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .error-msg {
+            background: #e74c3c;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        select,
+        input[type="number"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+    <script>
+        const contests = [
+            "NOI2004", "NOI2005", "NOI2006", "NOI2007", "NOI2008", "NOIP2008 提高", "NOI2009", "NOIP2009 提高", "CTSC2010", "APIO2010", "NOI2010", "NOI2010 D 类", "IOI2010", "NOIP2010 提高", "CTSC2011", "APIO2011", "NOI2011", "NOI2011 D 类", "IOI2011", "NOIP2011 提高", "CTSC2012", "APIO2012", "NOI2012", "NOI2012 D 类", "IOI2012", "NOIP2012 提高", "CTSC2013", "APIO2013", "NOI2013", "NOI2013 D 类", "IOI2013", "NOIP2013 提高", "NOIP2013 普及", "CTSC2014", "APIO2014", "NOI2014", "NOI2014 D 类", "IOI2014", "NOIP2014 提高", "NOIP2014 普及", "WC2015", "CTSC2015", "APIO2015", "NOI2015", "NOI2015 D 类", "IOI2015", "NOIP2015 提高", "NOIP2015 普及", "WC2016", "CTSC2016", "APIO2016", "NOI2016", "NOI2016 D 类", "IOI2016", "NOIP2016 提高", "NOIP2016 普及", "WC2017", "CTSC2017", "APIO2017", "NOI2017", "NOI2017 D 类", "IOI2017", "NOIP2017 提高", "NOIP2017 普及", "WC2018", "CTSC2018", "APIO2018", "NOI2018", "NOI2018 D 类", "IOI2018", "NOIP2018 提高", "NOIP2018 普及", "WC2019", "CTS2019", "APIO2019", "NOI2019", "NOI2019 夏令营", "IOI2019", "CSP2019 提高", "CSP2019 入门", "WC2020", "APIO2020", "NOI2020", "NOI2020 夏令营", "IOI2020", "CSP2020 提高", "CSP2020 入门", "NOIP2020", "WC2021", "APIO2021", "IOI2021", "NOI2021", "NOI2021 夏令营", "CSP2021 提高", "CSP2021 入门", "NOIP2021", "WC2022", "NGOI2022", "APIO2022", "APIO2022 线上", "IOI2022", "NOI2022", "NOI2022 夏令营", "CSP2022 提高", "CSP2022 入门", "NOIP2022", "WC2023", "春季测试 2023", "NGOI2023", "APIO2023", "APIO2023 线上", "NOI2023", "NOI2023 夏令营", "IOI2023", "CSP2023 提高", "CSP2023 入门", "NOIP2023", "NGOI2024", "WC2024", "APIO2024", "NOI2024", "NOI2024 夏令营", "IOI2024", "CSP2024 提高", "CSP2024 入门", "NOIP2024", "NGOI2025", "WC2025", "APIO2025", "NOI2025", "NOI2025 夏令营", "IOI2025", "CSP2025 提高", "CSP2025 入门", "NOIP2025", "NGOI2026", "WC2026"
+        ];
+
+        function levenshtein(s1, s2) {
+            const matrix = [];
+            for (let i = 0; i <= s1.length; i++) matrix[i] = [i];
+            for (let j = 1; j <= s2.length; j++) matrix[0][j] = j;
+            for (let i = 1; i <= s1.length; i++) {
+                for (let j = 1; j <= s2.length; j++) {
+                    if (s1.charAt(i - 1) === s2.charAt(j - 1))
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    else
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 2,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                }
+            }
+            return matrix[s1.length][s2.length];
+        }
+    </script>
 </head>
 
 <body>
-	<table id="contest-list" style="border: 1px solid #ccc;"></table>
-	<br />
-	<div style="font-size: small;">点击“不限”可以设置分数或奖项的限制。</div>
-	<br />
-	搜索比赛以添加到列表中：<input type="text" id="contest-input" onkeyup="searchContest()" placeholder="比赛名称" />
-	<ul id="search-result"></ul>
-	<br />
-	<button onclick="generate()">生成</button>
-	<button onclick="copyCode()">复制代码</button>
-	<button onclick="openOierDB()">打开OIerDB</button>
-	<br />
-	<pre id="code"></pre>
-	<div id="error-list"></div>
-	<script>
-		function removeError()
-		{
-			let list = document.getElementById("error-list");
-			list.removeChild(list.firstElementChild);
-		}
+    <div class="container">
+        <h1>🔍 OIerDB 自定义搜索脚本生成器</h1>
 
-		function showError(msg, color)
-		{
-			let list = document.getElementById("error-list");
-			let p = document.createElement("p");
-			p.innerHTML = msg;
-			p.style.color = color;
-			list.appendChild(p);
-			setTimeout(removeError, 3000);
-		}
+        <div class="hint">💡 提示：添加比赛后，点击“不限”可设置具体分值或奖项要求。</div>
 
-		class limit
-		{
-			constructor()
-			{
-				this.flag = false;
-				this.score = -1;
-				this.level = "";
-			}
-		}
-		let lim = [];
-		for (let i = 0; i < contests.length; ++i)
-			lim.push(new limit());
+        <table id="contest-list">
+            <!-- 表格内容由 JS 动态渲染 -->
+        </table>
 
-		function updateContestList()
-		{
-			let list = document.getElementById("contest-list");
-			list.innerHTML = "";
-			let header = document.createElement("tr");
-			let nameHeader = document.createElement("th");
-			nameHeader.innerHTML = "比赛名称";
-			nameHeader.style.width = "120px";
-			let scoreHeader = document.createElement("th");
-			scoreHeader.innerHTML = "得分";
-			scoreHeader.style.width = "50px";
-			let levelHeader = document.createElement("th");
-			levelHeader.innerHTML = "奖项";
-			levelHeader.style.width = "50px";
-			let removeHeader = document.createElement("th");
-			removeHeader.innerHTML = "操作";
-			removeHeader.style.width = "50px";
-			header.appendChild(nameHeader);
-			header.appendChild(scoreHeader);
-			header.appendChild(levelHeader);
-			header.appendChild(removeHeader);
-			list.appendChild(header);
-			for (let i = 0; i < contests.length; ++i)
-				if (lim[i].flag)
-				{
-					let item = document.createElement("tr");
-					let name = document.createElement("td");
-					name.innerHTML = contests[i];
-					let score = document.createElement("td");
-					let div = document.createElement("div");
-					div.innerHTML = lim[i].score == -1 ? "不限" : lim[i].score;
-					div.onclick = () => { inputScore_start(i); };
-					score.id = `score${i}`;
-					score.appendChild(div);
-					let level = document.createElement("td");
-					div = document.createElement("div");
-					div.innerHTML = lim[i].level == "" ? "不限" : lim[i].level;
-					div.onclick = () => { inputLevel_start(i); };
-					level.id = `level${i}`;
-					level.appendChild(div);
-					let removeButton = document.createElement("td");
-					removeButton.innerHTML = `<button onclick="removeContest(${i})">删除</button>`;
-					item.appendChild(name);
-					item.appendChild(score);
-					item.appendChild(level);
-					item.appendChild(removeButton);
-					list.appendChild(item);
-				}
-		}
-		updateContestList();
+        <div class="search-section">
+            <input type="text" id="contest-input" onkeyup="searchContest()" placeholder="输入比赛名称关键词 (例如: NOIP 2023)" />
+            <ul id="search-result"></ul>
+        </div>
 
-		function removeContest(id)
-		{
-			lim[id].flag = false;
-			updateContestList();
-		}
+        <button class="btn-generate" onclick="generate()">⚡ 生成自定义脚本</button>
 
-		function addContest(id)
-		{
-			if (lim[id].flag)
-				showError("该比赛已经添加到列表中了", "red");
-			else
-				lim[id].flag = true;
-			updateContestList();
-		}
+        <div class="action-btns">
+            <button onclick="copyCode()" style="background-color: #9b59b6;">📋 复制代码</button>
+            <button onclick="openOierDB()" style="background-color: #34495e;">🌐 前往 OIerDB</button>
+        </div>
 
-		function inputScore_start(id)
-		{
-			let element = document.getElementById(`score${id}`);
-			let input = document.createElement("input");
-			input.type = "number";
-			input.value = lim[id].score;
-			input.onblur = () => { inputScore_end(id, (Number)(input.value)); };
-			element.innerHTML = "";
-			element.appendChild(input);
-			input.focus();
-		}
+        <pre id="code">// 生成的脚本将显示在这里...</pre>
+    </div>
 
-		function inputScore_end(id, score)
-		{
-			lim[id].score = score;
-			updateContestList();
-		}
+    <div id="error-list"></div>
 
-		function inputLevel_start(id)
-		{
-			let element = document.getElementById(`level${id}`);
-			let select = document.createElement("select");
-			let option = document.createElement("option");
-			option.value = "";
-			option.innerHTML = "不限";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "金牌";
-			option.innerHTML = "金牌";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "银牌";
-			option.innerHTML = "银牌";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "铜牌";
-			option.innerHTML = "铜牌";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "一等奖";
-			option.innerHTML = "一等奖";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "二等奖";
-			option.innerHTML = "二等奖";
-			select.appendChild(option);
-			option = document.createElement("option");
-			option.value = "三等奖";
-			option.innerHTML = "三等奖";
-			select.appendChild(option);
+    <script>
+        function removeError() {
+            let list = document.getElementById("error-list");
+            if (list.firstElementChild) list.removeChild(list.firstElementChild);
+        }
 
-			element.innerHTML = "";
-			element.appendChild(select);
-			select.onblur = () => { inputLevel_end(id, select.value); };
-			select.value = lim[id].level;
-			select.focus();
-		}
+        function showError(msg, color) {
+            let list = document.getElementById("error-list");
+            let div = document.createElement("div");
+            div.className = "error-msg";
+            div.innerHTML = msg;
+            if (color === "green") div.style.background = "#2ecc71";
+            list.appendChild(div);
+            setTimeout(removeError, 3000);
+        }
 
-		function inputLevel_end(id, level)
-		{
-			lim[id].level = level;
-			updateContestList();
-		}
+        class limit {
+            constructor() {
+                this.flag = false;
+                this.score = -1;
+                this.level = "";
+            }
+        }
+        let lim = [];
+        for (let i = 0; i < contests.length; ++i) lim.push(new limit());
 
-		function searchContest()
-		{
-			const input = document.getElementById("contest-input").value.trim().toUpperCase();
-			let result = [];
-			for (let i = 0; i < contests.length; ++i)
-				result.push({ name: contests[i], id: i });
-			result.sort((a, b) => levenshtein(a.name, input) - levenshtein(b.name, input));
-			let list = document.getElementById("search-result");
-			list.innerHTML = "";
-			for (let i = 0; i < 10; ++i)
-			{
-				let item = document.createElement("li");
-				item.innerHTML = `${result[i].name}&nbsp;&nbsp;`;
-				let button = document.createElement("button");
-				button.innerHTML = "Add";
-				button.onclick = () => { addContest(result[i].id); };
-				item.appendChild(button);
-				list.appendChild(item);
-			}
-		}
+        function updateContestList() {
+            let list = document.getElementById("contest-list");
+            list.innerHTML = "";
+            let hasItems = false;
+            for (let i = 0; i < contests.length; ++i) if (lim[i].flag) hasItems = true;
 
-		function generate()
-		{
-			let information = [];
-			for (let i = 0; i < lim.length; ++i)
-				if (lim[i].flag)
-					information.push({ id: i, score: lim[i].score, level: lim[i].level });
-			document.getElementById("code").innerHTML = `/** @param {OIerDb} db */
-export default (db) =&gt
-{
-	return db.oiers.filter((oier) =&gt
-	{
-		const information = JSON.parse(\`${JSON.stringify(information)}\`);
-		let res = true;
-		for (let each of information)
-		{
-			let exist = false;
-			for (let record of oier.records)
-				if (record.contest.id === each.id)
-					if (each.score === -1 || record.score === each.score)
-						if (each.level === "" || record.level === each.level)
-							exist = true;
-			if (!exist)
-				res = false;
-		}
-		return res;
-	}).sort((a, b) =&gt a.records.length - b.records.length);
+            if (!hasItems) {
+                list.innerHTML = "<tr><td colspan='4' style='color:#999; padding:30px;'>暂未选择任何比赛条件</td></tr>";
+                return;
+            }
+
+            let header = document.createElement("tr");
+            header.innerHTML = `
+                <th style="width: 40%">比赛名称</th>
+                <th style="width: 20%">得分限制</th>
+                <th style="width: 20%">奖项限制</th>
+                <th style="width: 20%">操作</th>
+            `;
+            list.appendChild(header);
+
+            for (let i = 0; i < contests.length; ++i) {
+                if (lim[i].flag) {
+                    let item = document.createElement("tr");
+
+                    let name = document.createElement("td");
+                    name.innerHTML = `<strong>${contests[i]}</strong>`;
+
+                    let score = document.createElement("td");
+                    score.id = `score${i}`;
+                    let scoreDiv = document.createElement("div");
+                    scoreDiv.className = "clickable-cell";
+                    scoreDiv.innerHTML = lim[i].score == -1 ? "不限" : lim[i].score;
+                    scoreDiv.onclick = () => { inputScore_start(i); };
+                    score.appendChild(scoreDiv);
+
+                    let level = document.createElement("td");
+                    level.id = `level${i}`;
+                    let levelDiv = document.createElement("div");
+                    levelDiv.className = "clickable-cell";
+                    levelDiv.innerHTML = lim[i].level == "" ? "不限" : lim[i].level;
+                    levelDiv.onclick = () => { inputLevel_start(i); };
+                    level.appendChild(levelDiv);
+
+                    let removeButton = document.createElement("td");
+                    removeButton.innerHTML = `<button style="background:#e74c3c" onclick="removeContest(${i})">移除</button>`;
+
+                    item.appendChild(name);
+                    item.appendChild(score);
+                    item.appendChild(level);
+                    item.appendChild(removeButton);
+                    list.appendChild(item);
+                }
+            }
+        }
+        updateContestList();
+
+        function removeContest(id) {
+            lim[id].flag = false;
+            updateContestList();
+        }
+
+        function addContest(id) {
+            if (lim[id].flag)
+                showError("该比赛已经添加到列表中了", "red");
+            else
+                lim[id].flag = true;
+            updateContestList();
+        }
+
+        function inputScore_start(id) {
+            let element = document.getElementById(`score${id}`);
+            let input = document.createElement("input");
+            input.type = "number";
+            input.value = lim[id].score;
+            input.onblur = () => { inputScore_end(id, (Number)(input.value)); };
+            input.onkeydown = (e) => { if (e.key === 'Enter') input.blur(); };
+            element.innerHTML = "";
+            element.appendChild(input);
+            input.focus();
+        }
+
+        function inputScore_end(id, score) {
+            lim[id].score = score;
+            updateContestList();
+        }
+
+        function inputLevel_start(id) {
+            let element = document.getElementById(`level${id}`);
+            let select = document.createElement("select");
+            const options = ["不限", "金牌", "银牌", "铜牌", "一等奖", "二等奖", "三等奖"];
+            options.forEach(opt => {
+                let o = document.createElement("option");
+                o.value = opt === "不限" ? "" : opt;
+                o.innerHTML = opt;
+                select.appendChild(o);
+            });
+            element.innerHTML = "";
+            element.appendChild(select);
+            select.onblur = () => { inputLevel_end(id, select.value); };
+            select.onchange = () => { select.blur(); };
+            select.value = lim[id].level;
+            select.focus();
+        }
+
+        function inputLevel_end(id, level) {
+            lim[id].level = level;
+            updateContestList();
+        }
+
+        function searchContest() {
+            const inputVal = document.getElementById("contest-input").value.trim().toUpperCase();
+            if (!inputVal) {
+                document.getElementById("search-result").innerHTML = "";
+                return;
+            }
+            let result = [];
+            for (let i = 0; i < contests.length; ++i)
+                result.push({ name: contests[i], id: i });
+
+            result.sort((a, b) => levenshtein(a.name, inputVal) - levenshtein(b.name, inputVal));
+
+            let list = document.getElementById("search-result");
+            list.innerHTML = "";
+            for (let i = 0; i < Math.min(10, result.length); ++i) {
+                let item = document.createElement("li");
+                item.innerHTML = `<span>${result[i].name}</span>`;
+                let button = document.createElement("button");
+                button.innerHTML = "添加";
+                button.onclick = () => { addContest(result[i].id); };
+                item.appendChild(button);
+                list.appendChild(item);
+            }
+        }
+
+        function generate() {
+            let information = [];
+            for (let i = 0; i < lim.length; ++i)
+                if (lim[i].flag)
+                    information.push({ id: i, score: lim[i].score, level: lim[i].level });
+
+            if (information.length === 0) {
+                showError("请至少选择一个比赛条件", "red");
+                return;
+            }
+
+            document.getElementById("code").innerText = `/** @param {OIerDb} db */
+export default (db) => {
+    return db.oiers.filter((oier) => {
+        const information = JSON.parse(\`${JSON.stringify(information)}\`);
+        let res = true;
+        for (let each of information) {
+            let exist = false;
+            for (let record of oier.records) {
+                if (record.contest.id === each.id) {
+                    const scoreMatch = (each.score === -1 || record.score === each.score);
+                    const levelMatch = (each.level === "" || record.level === each.level);
+                    if (scoreMatch && levelMatch) exist = true;
+                }
+            }
+            if (!exist) res = false;
+        }
+        return res;
+    }).sort((a, b) => a.records.length - b.records.length);
 };`;
-		}
+        }
 
-		async function copyCode()
-		{
-			try
-			{
-				await navigator.clipboard.writeText(document.getElementById("code").innerText);
-				showError("代码已复制到剪贴板", "green");
-			}
-			catch (e)
-			{
-				showError(`复制失败，请手动复制。错误信息：${e}`, "red");
-			}
-		}
+        async function copyCode() {
+            const codeText = document.getElementById("code").innerText;
+            if (codeText.startsWith("//")) {
+                showError("请先生成代码", "red");
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(codeText);
+                showError("代码已复制到剪贴板", "green");
+            } catch (e) {
+                showError(`复制失败: ${e}`, "red");
+            }
+        }
 
-		function openOierDB()
-		{
-			window.open(`https://www.xn--vuqs4zq3d.com/custom-search`);
-		}
-	</script>
+        function openOierDB() {
+            window.open(`https://www.oi-db.com/custom-search`);
+        }
+    </script>
 </body>
 
 </html>
