@@ -1,63 +1,200 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
-	<meta charset="UTF-8">
-	<title>Tanjaiqi (谭家齐)</title>
-	<style>
-		a {
-			text-decoration: none;
-			color: #999;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tanjiaqi | Algorithm & CP Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap');
 
-		p {
-			margin-top: 30px;
-		}
-	</style>
+        body {
+            background-color: #0d1117;
+            color: #e6edf3;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        .glass {
+            background: rgba(22, 27, 34, 0.7);
+            border: 1px solid #30363d;
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+        }
+
+        .color-luogu {
+            color: #fe4c61;
+        }
+
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #21262d;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            transition: width 1s ease-in-out;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #3b82f6;
+            transition: all 0.3s;
+        }
+
+        .friend-link:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: #3b82f6;
+        }
+    </style>
 </head>
 
-<body style="background-color: #222; color: #FFF">
-	<div style="margin: 0 auto; max-width: 1000px;">
-		<header
-			style="height: 70px; border-bottom: 5px solid #444; border-left: 3px solid #444; border-right: 3px solid #444;">
-			<a style="display: inline-flex; align-items: center; justify-content: center; height: 100%; width: 19%; border-right: 3px solid #444; color: #FFF;"
-				href="/">
-				首页</a>
-			<a style="display: inline-flex; align-items: center; justify-content: center; height: 100%; width: 19%; border-right: 3px solid #444; color: #FFF;"
-				href="/aboutme.html">
-				关于我</a>
-			<a style="display: inline-flex; align-items: center; justify-content: center; height: 100%; width: 19%; border-right: 3px solid #444; color: #FFF;"
-				href="/development.html">
-				开发</a>
-			<a style="display: inline-flex; align-items: center; justify-content: center; height: 100%; width: 19%; border-right: 3px solid #444; color: #FFF;"
-				href="/webapplications.html">
-				Web 应用</a>
-			<a style="display: inline-flex; align-items: center; justify-content: center; height: 100%; width: 19%; color: #FFF;"
-				href="/records">
-				记录</a>
-		</header>
-		<main style="margin-top: 50px; width: 100%;">
-			<div style="margin: 0 auto; width: 15%;">
-				<img src="/head.png" style="margin: 0 auto; width: 100%; border-radius: 50%; border: 1px solid #000;" />
-			</div>
-			<p style="text-align: center; font-size: 30px; width: 100%; margin-top: 0; margin-bottom: 0;">
-				<strong>Tanjiaqi</strong>
-			</p>
-			<p style="text-align: center; font-size: 20px; color: #555; width: 100%; margin-top: 0;">只要比赛还没有结束，就不要说放弃
-			</p>
-			<div style="margin: 0 auto; width: max-content; margin-top: 50px;">
-				<p>你好，我是tanjiaqi (stdin)，欢迎来到我的 github page ！</p>
-				<p>我现在是一名初三学生，正在学习计算机科学，热爱用自己的知识制作一些有趣的东西。</p>
-				<p>我就读于重庆八中宏帆中学校，是重庆八中 G2029 信息竞赛团队的一名成员</p>
-				<p>我喜欢玩的游戏有
-					<a href="https://www.minecraft.net/">Minecraft</a>、
-					<a href="https://adof.ai/">冰与火之舞</a>、
-					<a href="https://tetr.io/">Tetr.io</a> 等
-				</p>
-				<p>你可以通过 tanjiaqi@outlook.com 和 tanjiaqi@gmail.com 与我联系。</p>
-			</div>
-		</main>
-	</div>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header (保持原有) -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+            <div>
+                <h1 class="text-4xl font-black tracking-tight mb-2">
+                    <span class="text-blue-500">tanjiaqi</span>
+                    <span class="text-gray-500 text-2xl font-normal">/ Stdin</span>
+                </h1>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <span class="glass px-3 py-1 text-xs mono text-green-400">#CQ_G2030_OIer</span>
+                    <span class="glass px-3 py-1 text-xs mono text-blue-400">#Blue_Rank_Expert</span>
+                </div>
+            </div>
+            <div class="flex space-x-4">
+                <a href="https://codeforces.com/profile/tanjiaqi" target="_blank" class="hover:opacity-80"><i
+                        data-lucide="external-link" class="inline w-4 h-4 mr-1"></i>CF</a>
+                <a href="https://atcoder.jp/users/Stdin" target="_blank" class="hover:opacity-80"><i
+                        data-lucide="external-link" class="inline w-4 h-4 mr-1"></i>AtCoder</a>
+                <a href="https://www.luogu.com.cn/user/846303" target="_blank" class="hover:opacity-80"><i
+                        data-lucide="external-link" class="inline w-4 h-4 mr-1"></i>Luogu</a>
+            </div>
+        </header>
+
+        <!-- Stats Grid (保持原有) -->
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="glass p-6 border-l-4 border-blue-600">
+                <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Codeforces</h3>
+                <div class="text-3xl font-black text-blue-600 mb-1">1716</div>
+                <p class="text-xs text-gray-400 mono">Expert</p>
+            </div>
+            <div class="glass p-6 border-l-4 border-blue-700">
+                <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">AtCoder</h3>
+                <div class="text-3xl font-black text-blue-700 mb-1">1620</div>
+                <p class="text-xs text-gray-400 mono">2 Kyu</p>
+            </div>
+            <div class="glass p-6 border-l-4 border-pink-500">
+                <h3 class="text-sm font-bold text-gray-500 uppercase mb-4">Luogu</h3>
+                <div class="text-3xl font-black color-luogu mb-1">941</div>
+                <p class="text-xs text-gray-400 mono">Accepted 925 Problems</p>
+            </div>
+        </main>
+
+        <!-- [NEW] About Me Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i data-lucide="user" class="mr-2 text-blue-500"></i> About Me
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-2 glass p-8 leading-relaxed">
+                    <p class="mb-4 text-gray-300">
+                        这里是 <span class="text-white font-bold">tanjiaqi</span>，一名来自重庆、预计 2030 年毕业的 OI 选手。
+                        在算法的世界里，我习惯于在 <span class="mono text-blue-400 font-bold">O(N log N)</span>
+                        的时空裂隙中寻找最优解；而在现实世界，我是各种节奏与方块的重度玩家。
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="flex items-center space-x-3 bg-white/5 p-3 rounded-lg">
+                            <i data-lucide="music" class="text-pink-400"></i>
+                            <div>
+                                <div class="text-xs text-gray-500">ADOFAI</div>
+                                <div class="text-sm">Rhythm pupil</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 bg-white/5 p-3 rounded-lg">
+                            <i data-lucide="layout-grid" class="text-blue-400"></i>
+                            <div>
+                                <div class="text-xs text-gray-500">TETRIO</div>
+                                <div class="text-sm">30 APM Player</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass p-6 mono text-xs leading-loose bg-blue-900/10">
+                    <div class="text-blue-500 mb-2"># User Profile</div>
+                    <div>STATUS: <span class="text-green-400 underline italic">Active</span></div>
+                    <div>LOC: Chongqing, CN</div>
+                    <div>LANGUAGE: C++, JavaScript</div>
+                    <div>IDE: VS Code</div>
+                    <div>HOBBY: TETR, MC, ADOFAI</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- [NEW] Projects Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i data-lucide="folder-git-2" class="mr-2 text-blue-500"></i> Projects
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+                <!-- 项目 1 -->
+                <div class="glass p-6 project-card cursor-pointer">
+                    <div class="flex justify-between items-start mb-4">
+                        <i data-lucide="code-xml" class="text-blue-500"></i>
+                        <span
+                            class="text-[10px] mono bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded">JavaScript</span>
+                    </div>
+                    <h4 class="font-bold text-base mb-2 text-white">有机化学分子渲染器</h4>
+                    <p class="text-gray-400 mb-4">支持添加原子，连键，断键以及自适应的空间排序。</p>
+                    <div class="flex space-x-3 text-gray-500"><i data-lucide="github" size="16"></i><i
+                            data-lucide="star" size="16"></i></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- [NEW] Friendly Links -->
+        <section class="mb-20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <i data-lucide="link" class="mr-2 text-blue-500"></i> Friends
+            </h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="#" class="glass p-4 friend-link transition-all flex items-center space-x-3 group">
+                    <div class="w-8 h-8 rounded-full bg-gray-700 group-hover:scale-110 transition"></div>
+                    <span class="text-sm font-medium">XiangXunyi</span>
+                </a>
+                <a href="#" class="glass p-4 friend-link transition-all flex items-center space-x-3 group">
+                    <div class="w-8 h-8 rounded-full bg-gray-700 group-hover:scale-110 transition"></div>
+                    <span class="text-sm font-medium">ZengMaoyuan</span>
+                </a>
+                <a href="#" class="glass p-4 friend-link transition-all flex items-center space-x-3 group">
+                    <div class="w-8 h-8 rounded-full bg-gray-700 group-hover:scale-110 transition"></div>
+                    <span class="text-sm font-medium">WangYueheng</span>
+                </a>
+                <a href="#" class="glass p-4 friend-link transition-all flex items-center space-x-3 group">
+                    <div class="w-8 h-8 rounded-full bg-gray-700 group-hover:scale-110 transition"></div>
+                    <span class="text-sm font-medium">YangBaicheng</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer (保持原有) -->
+        <footer class="text-center py-10 border-t border-gray-800 text-gray-600 text-xs mono uppercase tracking-widest">
+            Designed by <span class="text-gray-400">tanjiaqi @ 2026</span>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
