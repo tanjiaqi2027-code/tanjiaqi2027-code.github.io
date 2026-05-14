@@ -1,12 +1,18 @@
-```html
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <title>Molecular Designer Pro - CQYC Edition</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #050505; font-family: 'Fira Code', monospace; color: #00ffcc; }
-        
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #050505;
+            font-family: 'Fira Code', monospace;
+            color: #00ffcc;
+        }
+
         #top-panel {
             position: absolute;
             top: 20px;
@@ -18,8 +24,14 @@
             pointer-events: none;
         }
 
-        #formula-display { font-size: 28px; text-shadow: 0 0 10px #00ffcc; }
-        #formula-display sub { font-size: 16px; }
+        #formula-display {
+            font-size: 28px;
+            text-shadow: 0 0 10px #00ffcc;
+        }
+
+        #formula-display sub {
+            font-size: 16px;
+        }
 
         #ui-left {
             position: absolute;
@@ -69,8 +81,11 @@
             transition: 0.2s;
         }
 
-        button:hover { background: #00ffcc; color: #000; }
-        
+        button:hover {
+            background: #00ffcc;
+            color: #000;
+        }
+
         #instruction {
             position: absolute;
             bottom: 80px;
@@ -81,35 +96,36 @@
         }
     </style>
 </head>
+
 <body>
 
-<div id="top-panel">
-    <div id="formula-display">Formula: <span id="formula-val">Empty</span></div>
-    <div style="text-align: right">
-        <div>ENERGY: <span id="energy-val">0.000</span> eV</div>
-        <div>SELECT: <span id="select-count">0</span>/2</div>
+    <div id="top-panel">
+        <div id="formula-display">Formula: <span id="formula-val">Empty</span></div>
+        <div style="text-align: right">
+            <div>ENERGY: <span id="energy-val">0.000</span> eV</div>
+            <div>SELECT: <span id="select-count">0</span>/2</div>
+        </div>
     </div>
-</div>
 
-<div id="ui-left">
-    <div style="color: #ffcc00; margin-bottom: 5px;">[ 实验室状态 ]</div>
-    <div id="bond-log">等待操作...</div>
-</div>
+    <div id="ui-left">
+        <div style="color: #ffcc00; margin-bottom: 5px;">[ 实验室状态 ]</div>
+        <div id="bond-log">等待操作...</div>
+    </div>
 
-<div id="instruction">左键点击原子选择 | 连续点击两原子成/断键 | Delete键删除 | 拖动旋转</div>
+    <div id="instruction">左键点击原子选择 | 连续点击两原子成/断键 | Delete键删除 | 拖动旋转</div>
 
-<div class="btn-group">
-    <button onclick="deleteSelected()" style="border-color: #ff3366; color: #ff3366;">[ 删除选中原子 ]</button>
-    <button onclick="autoLayout()">[ 自动拓扑排序 ]</button>
-    <button onclick="clearAll()">[ 全部清空 ]</button>
-</div>
+    <div class="btn-group">
+        <button onclick="deleteSelected()" style="border-color: #ff3366; color: #ff3366;">[ 删除选中原子 ]</button>
+        <button onclick="autoLayout()">[ 自动拓扑排序 ]</button>
+        <button onclick="clearAll()">[ 全部清空 ]</button>
+    </div>
 
-<div id="cli-container">
-    <label style="margin-right:10px;">COMMAND></label>
-    <input type="text" id="cmd-input" placeholder="add C 5 / clear" autocomplete="off">
-</div>
+    <div id="cli-container">
+        <label style="margin-right:10px;">COMMAND></label>
+        <input type="text" id="cmd-input" placeholder="add C 5 / clear" autocomplete="off">
+    </div>
 
-<script type="importmap">
+    <script type="importmap">
     {
         "imports": {
             "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -118,346 +134,385 @@
     }
 </script>
 
-<script type="module">
-    import * as THREE from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-    const ATOM_DATA = {
-        'C': { color: 0x333333, radius: 0.7, mass: 12 },
-        'H': { color: 0xffffff, radius: 0.4, mass: 1 },
-        'O': { color: 0xff3366, radius: 0.6, mass: 16 }
-    };
+        const ATOM_DATA = {
+            'C': { color: 0x333333, radius: 0.7, mass: 12 },
+            'H': { color: 0xffffff, radius: 0.4, mass: 1 },
+            'O': { color: 0xff3366, radius: 0.6, mass: 16 }
+        };
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    camera.position.z = 20;
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        camera.position.z = 20;
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.8));
-    const light = new THREE.PointLight(0xffffff, 100);
-    light.position.set(10, 10, 10);
-    scene.add(light);
+        scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+        const light = new THREE.PointLight(0xffffff, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
 
-    // --- 数据存储 ---
-    let atoms = []; // 存储原子对象
-    let manualBonds = new Set(); // 存储 "ID1-ID2"
-    let selection = []; // 存储选中的原子 ID
-    let idCounter = 0;
+        // --- 数据存储 ---
+        let atoms = []; // 存储原子对象
+        let manualBonds = new Set(); // 存储 "ID1-ID2"
+        let selection = []; // 存储选中的原子 ID
+        let idCounter = 0;
 
-    const bondGroup = new THREE.Group();
-    scene.add(bondGroup);
+        const bondGroup = new THREE.Group();
+        scene.add(bondGroup);
 
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
 
-    // --- 核心交互逻辑 ---
-    window.addEventListener('mousedown', (e) => {
-        if (e.button !== 0) return; // 仅左键点击
+        // --- 核心交互逻辑 ---
+        window.addEventListener('mousedown', (e) => {
+            if (e.button !== 0) return; // 仅左键点击
 
-        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera);
-        const intersects = raycaster.intersectObjects(atoms.map(a => a.mesh));
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(atoms.map(a => a.mesh));
 
-        if (intersects.length > 0) {
-            const clickedMesh = intersects[0].object;
-            const atom = atoms.find(a => a.mesh === clickedMesh);
-            if (atom) handleSelection(atom.id);
-        }
-    });
-
-    window.addEventListener('keydown', (e) => {
-        if (e.key === 'Delete' || e.key === 'Backspace') {
-            deleteSelected();
-        }
-    });
-
-    function handleSelection(id) {
-        const atom = atoms.find(a => a.id === id);
-        const sIdx = selection.indexOf(id);
-
-        if (sIdx > -1) {
-            // 取消选中
-            selection.splice(sIdx, 1);
-            atom.mesh.material.emissive.setHex(0x000000);
-        } else {
-            if (selection.length >= 2) {
-                // 清掉最早的一个
-                const first = atoms.find(a => a.id === selection[0]);
-                if(first) first.mesh.material.emissive.setHex(0x000000);
-                selection.shift();
-            }
-            selection.push(id);
-            atom.mesh.material.emissive.setHex(0x00ffcc);
-            atom.mesh.material.emissiveIntensity = 0.5;
-        }
-
-        // 连/断键逻辑
-        if (selection.length === 2) {
-            const [id1, id2] = selection.sort((a,b) => a-b);
-            const bondKey = `${id1}-${id2}`;
-            
-            if (manualBonds.has(bondKey)) {
-                manualBonds.delete(bondKey);
-                document.getElementById('bond-log').innerText = "断开共价键";
-            } else {
-                manualBonds.add(bondKey);
-                document.getElementById('bond-log').innerText = "建立新共价键";
-            }
-            
-            // 自动清除高亮
-            setTimeout(() => {
-                selection.forEach(sid => {
-                    const a = atoms.find(at => at.id === sid);
-                    if(a) a.mesh.material.emissive.setHex(0x000000);
-                });
-                selection = [];
-                document.getElementById('select-count').innerText = 0;
-            }, 300);
-        }
-        document.getElementById('select-count').innerText = selection.length;
-    }
-
-    window.deleteSelected = function() {
-        if (selection.length === 0) return;
-        
-        selection.forEach(sid => {
-            const idx = atoms.findIndex(a => a.id === sid);
-            if (idx > -1) {
-                scene.remove(atoms[idx].mesh);
-                // 清理相关的键
-                manualBonds.forEach(key => {
-                    if (key.includes(sid.toString())) manualBonds.delete(key);
-                });
-                atoms.splice(idx, 1);
+            if (intersects.length > 0) {
+                const clickedMesh = intersects[0].object;
+                const atom = atoms.find(a => a.mesh === clickedMesh);
+                if (atom) handleSelection(atom.id);
             }
         });
-        selection = [];
-        updateFormula();
-        document.getElementById('select-count').innerText = 0;
-        document.getElementById('bond-log').innerText = "原子已移除";
-    };
 
-    // // --- 物理引擎 ---
-    // function updatePhysics() {
-    //     let potentialE = 0;
-    //     let kineticE = 0;
-
-    //     for (let i = 0; i < atoms.length; i++) {
-    //         const a = atoms[i];
-
-    //         // 处理自动排序引力
-    //         if (a.targetPos) {
-    //             const diff = new THREE.Vector3().subVectors(a.targetPos, a.mesh.position);
-    //             a.vel.add(diff.multiplyScalar(0.05));
-    //             if (diff.length() < 0.1) a.targetPos = null;
-    //         }
-
-    //         // 原子间力
-    //         for (let j = i + 1; j < atoms.length; j++) {
-    //             const b = atoms[j];
-    //             const diff = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
-    //             const dist = diff.length();
-    //             const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
-
-    //             if (manualBonds.has(bondKey)) {
-    //                 // 键合引力
-    //                 const force = (dist - 2.5) * 0.1;
-    //                 const fVec = diff.clone().normalize().multiplyScalar(force);
-    //                 a.vel.add(fVec);
-    //                 b.vel.sub(fVec);
-    //                 potentialE += Math.abs(force) * 20;
-    //             } else {
-    //                 // 斥力
-    //                 const minDist = a.radius + b.radius + 1.5;
-    //                 if (dist < minDist) {
-    //                     const fVec = diff.clone().normalize().multiplyScalar((minDist - dist) * 0.05);
-    //                     a.vel.sub(fVec);
-    //                     b.vel.add(fVec);
-    //                 }
-    //             }
-    //         }
-
-    //         a.mesh.position.add(a.vel);
-    //         a.vel.multiplyScalar(0.9);
-    //         kineticE += 0.5 * a.mass * a.vel.lengthSq();
-    //     }
-
-    //     document.getElementById('energy-val').innerText = (kineticE + potentialE).toFixed(3);
-    //     renderBonds();
-    // }
-
-    function renderBonds() {
-        bondGroup.clear();
-        const mat = new THREE.MeshPhongMaterial({ color: 0x00ffcc, transparent: true, opacity: 0.5 });
-        manualBonds.forEach(key => {
-            const [id1, id2] = key.split('-').map(Number);
-            const a1 = atoms.find(a => a.id === id1);
-            const a2 = atoms.find(a => a.id === id2);
-            if (a1 && a2) {
-                const dist = a1.mesh.position.distanceTo(a2.mesh.position);
-                const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, dist, 8), mat);
-                cyl.position.copy(a1.mesh.position).lerp(a2.mesh.position, 0.5);
-                cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), a2.mesh.position.clone().sub(a1.mesh.position).normalize());
-                bondGroup.add(cyl);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' || e.key === 'Backspace') {
+                deleteSelected();
             }
         });
-    }
 
-    
-    // --- 基础功能 ---
-window.addAtom = function(type, pos = null, isStatic = false) {
-    const data = ATOM_DATA[type];
-    const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(data.radius, 32, 32),
-        new THREE.MeshPhongMaterial({ 
-            color: data.color, 
-            shininess: 120,
-            emissive: data.color,
-            emissiveIntensity: 0.3 
-        })
-    );
-    
-    if (pos) mesh.position.copy(pos);
-    else mesh.position.set((Math.random()-0.5)*15, (Math.random()-0.5)*15, (Math.random()-0.5)*15);
-    
-    const atomObj = { 
-        id: idCounter++, 
-        type, 
-        mesh, 
-        radius: data.radius, 
-        mass: data.mass, 
-        vel: new THREE.Vector3(0, 0, 0), 
-        targetPos: null,
-        isStatic: isStatic // 新增：是否受物理引擎影响
-    };
-    
-    scene.add(mesh);
-    atoms.push(atomObj);
-    updateFormula();
-    return atomObj;
-};
+        function handleSelection(id) {
+            const atom = atoms.find(a => a.id === id);
+            const sIdx = selection.indexOf(id);
 
-    window.autoLayout = function() {
-    if (atoms.length === 0) return;
-
-    // 1. 初始化一个松散的随机三维分布（作为模拟退火的起始状态）
-    atoms.forEach(a => {
-        a.mesh.position.add(new THREE.Vector3(
-            (Math.random() - 0.5) * 5,
-            (Math.random() - 0.5) * 5,
-            (Math.random() - 0.5) * 5
-        ));
-    });
-
-    // 2. 这里的逻辑不再是“瞬间移动”，而是激活“全局松弛模式”
-    // 我们通过调整物理引擎中的“理想键长”和“斥力系数”
-    // 让系统在接下来的几十帧内自动“展开”成能量最低的拓扑形状
-    document.getElementById('bond-log').innerText = "执行拓扑自适应优化...";
-    
-    // 给系统一个初始动能冲量
-    atoms.forEach(a => {
-        a.vel.add(new THREE.Vector3(
-            (Math.random() - 0.5) * 2,
-            (Math.random() - 0.5) * 2,
-            (Math.random() - 0.5) * 2
-        ));
-    });
-};
-
-// --- 更新物理循环中的力学模型 ---
-function updatePhysics() {
-    let totalPotential = 0;
-    const k = 2.5; // 理想键长
-    const repelStr = 1.2; // 斥力强度
-
-    for (let i = 0; i < atoms.length; i++) {
-        const a = atoms[i];
-        
-        // 【关键修复 1】如果原子 a 是静态的（爱心组成部分），它不应该被计算位移
-        if (a.isStatic) {
-            a.vel.set(0, 0, 0); // 强制速度清零
-            continue; 
-        }
-
-        for (let j = 0; j < atoms.length; j++) {
-            if (i === j) continue;
-            const b = atoms[j];
-            
-            const diff = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
-            const dist = diff.length() || 0.1;
-            const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
-
-            if (manualBonds.has(bondKey)) {
-                // 引力
-                const forceMag = (dist - k) * 0.15;
-                const fVec = diff.clone().normalize().multiplyScalar(forceMag);
-                a.vel.add(fVec);
-                totalPotential += 0.5 * 0.15 * Math.pow(dist - k, 2);
+            if (sIdx > -1) {
+                // 取消选中
+                selection.splice(sIdx, 1);
+                atom.mesh.material.emissive.setHex(0x000000);
             } else {
-                // 斥力：即使 b 是静态的，它也会推开非静态的 a
-                // 但 a 绝不会推开静态的 b（因为 b 在外层循环会被 skip）
-                const forceMag = repelStr / (dist * dist);
-                const fVec = diff.clone().normalize().multiplyScalar(forceMag);
-                a.vel.sub(fVec);
-                totalPotential += repelStr / dist;
+                if (selection.length >= 2) {
+                    // 清掉最早的一个
+                    const first = atoms.find(a => a.id === selection[0]);
+                    if (first) first.mesh.material.emissive.setHex(0x000000);
+                    selection.shift();
+                }
+                selection.push(id);
+                atom.mesh.material.emissive.setHex(0x00ffcc);
+                atom.mesh.material.emissiveIntensity = 0.5;
             }
+
+            // 连/断键逻辑
+            if (selection.length === 2) {
+                const [id1, id2] = selection.sort((a, b) => a - b);
+                const bondKey = `${id1}-${id2}`;
+
+                if (manualBonds.has(bondKey)) {
+                    manualBonds.delete(bondKey);
+                    document.getElementById('bond-log').innerText = "断开共价键";
+                } else {
+                    manualBonds.add(bondKey);
+                    document.getElementById('bond-log').innerText = "建立新共价键";
+                }
+
+                // 自动清除高亮
+                setTimeout(() => {
+                    selection.forEach(sid => {
+                        const a = atoms.find(at => at.id === sid);
+                        if (a) a.mesh.material.emissive.setHex(0x000000);
+                    });
+                    selection = [];
+                    document.getElementById('select-count').innerText = 0;
+                }, 300);
+            }
+            document.getElementById('select-count').innerText = selection.length;
         }
 
-        // 中心约束力
-        a.vel.add(a.mesh.position.clone().multiplyScalar(-0.01));
+        window.deleteSelected = function () {
+            if (selection.length === 0) return;
 
-        // 应用位移
-        a.mesh.position.add(a.vel);
-        
-        // 动态阻尼
-        a.vel.multiplyScalar(0.85); 
-    }
+            selection.forEach(sid => {
+                const idx = atoms.findIndex(a => a.id === sid);
+                if (idx > -1) {
+                    scene.remove(atoms[idx].mesh);
+                    // 清理相关的键
+                    manualBonds.forEach(key => {
+                        if (key.includes(sid.toString())) manualBonds.delete(key);
+                    });
+                    atoms.splice(idx, 1);
+                }
+            });
+            selection = [];
+            updateFormula();
+            document.getElementById('select-count').innerText = 0;
+            document.getElementById('bond-log').innerText = "原子已移除";
+        };
 
-    const energyVal = document.getElementById('energy-val');
-    if (energyVal) energyVal.innerText = totalPotential.toFixed(3);
-    renderBonds();
-}
+        // // --- 物理引擎 ---
+        // function updatePhysics() {
+        //     let potentialE = 0;
+        //     let kineticE = 0;
 
-    window.clearAll = function() {
-        atoms.forEach(a => scene.remove(a.mesh));
-        atoms = [];
-        manualBonds.clear();
-        selection = [];
-        updateFormula();
-    };
+        //     for (let i = 0; i < atoms.length; i++) {
+        //         const a = atoms[i];
 
-    function updateFormula() {
-        const c = { 'C': 0, 'H': 0, 'O': 0 };
-        atoms.forEach(a => c[a.type]++);
-        let s = "";
-        ['C', 'H', 'O'].forEach(el => { if(c[el]>0) s += `${el}${c[el]>1 ? `<sub>${c[el]}</sub>` : ""}`; });
-        document.getElementById('formula-val').innerHTML = s || "Empty";
-    }
+        //         // 处理自动排序引力
+        //         if (a.targetPos) {
+        //             const diff = new THREE.Vector3().subVectors(a.targetPos, a.mesh.position);
+        //             a.vel.add(diff.multiplyScalar(0.05));
+        //             if (diff.length() < 0.1) a.targetPos = null;
+        //         }
 
-    // --- 指令解析 ---
-    document.getElementById('cmd-input').addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const cmd = e.target.value.trim().toLowerCase();if (cmd === 'clear') clearAll();
-            else if (cmd.startsWith('add ')) {
-                const parts = cmd.split(' ');
-                const type = parts[1].toUpperCase();
-                const num = parseInt(parts[2]) || 1;
-                if (ATOM_DATA[type]) for(let i=0; i<num; i++) addAtom(type);
-            }
-            e.target.value = '';
+        //         // 原子间力
+        //         for (let j = i + 1; j < atoms.length; j++) {
+        //             const b = atoms[j];
+        //             const diff = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
+        //             const dist = diff.length();
+        //             const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
+
+        //             if (manualBonds.has(bondKey)) {
+        //                 // 键合引力
+        //                 const force = (dist - 2.5) * 0.1;
+        //                 const fVec = diff.clone().normalize().multiplyScalar(force);
+        //                 a.vel.add(fVec);
+        //                 b.vel.sub(fVec);
+        //                 potentialE += Math.abs(force) * 20;
+        //             } else {
+        //                 // 斥力
+        //                 const minDist = a.radius + b.radius + 1.5;
+        //                 if (dist < minDist) {
+        //                     const fVec = diff.clone().normalize().multiplyScalar((minDist - dist) * 0.05);
+        //                     a.vel.sub(fVec);
+        //                     b.vel.add(fVec);
+        //                 }
+        //             }
+        //         }
+
+        //         a.mesh.position.add(a.vel);
+        //         a.vel.multiplyScalar(0.9);
+        //         kineticE += 0.5 * a.mass * a.vel.lengthSq();
+        //     }
+
+        //     document.getElementById('energy-val').innerText = (kineticE + potentialE).toFixed(3);
+        //     renderBonds();
+        // }
+
+        function renderBonds() {
+            bondGroup.clear();
+            const mat = new THREE.MeshPhongMaterial({ color: 0x00ffcc, transparent: true, opacity: 0.5 });
+            manualBonds.forEach(key => {
+                const [id1, id2] = key.split('-').map(Number);
+                const a1 = atoms.find(a => a.id === id1);
+                const a2 = atoms.find(a => a.id === id2);
+                if (a1 && a2) {
+                    const dist = a1.mesh.position.distanceTo(a2.mesh.position);
+                    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, dist, 8), mat);
+                    cyl.position.copy(a1.mesh.position).lerp(a2.mesh.position, 0.5);
+                    cyl.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), a2.mesh.position.clone().sub(a1.mesh.position).normalize());
+                    bondGroup.add(cyl);
+                }
+            });
         }
-    });
 
-    
 
-</script>
+        // --- 基础功能 ---
+        window.addAtom = function (type, pos = null, isStatic = false) {
+            const data = ATOM_DATA[type];
+            const mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(data.radius, 32, 32),
+                new THREE.MeshPhongMaterial({
+                    color: data.color,
+                    shininess: 120,
+                    emissive: data.color,
+                    emissiveIntensity: 0.3
+                })
+            );
+
+            if (pos) mesh.position.copy(pos);
+            else mesh.position.set((Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15, (Math.random() - 0.5) * 15);
+
+            const atomObj = {
+                id: idCounter++,
+                type,
+                mesh,
+                radius: data.radius,
+                mass: data.mass,
+                vel: new THREE.Vector3(0, 0, 0),
+                targetPos: null,
+                isStatic: isStatic // 新增：是否受物理引擎影响
+            };
+
+            scene.add(mesh);
+            atoms.push(atomObj);
+            updateFormula();
+            return atomObj;
+        };
+
+        window.autoLayout = function () {
+            if (atoms.length === 0) return;
+
+            // 1. 初始化一个松散的随机三维分布（作为模拟退火的起始状态）
+            atoms.forEach(a => {
+                a.mesh.position.add(new THREE.Vector3(
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 5,
+                    (Math.random() - 0.5) * 5
+                ));
+            });
+
+            // 2. 这里的逻辑不再是“瞬间移动”，而是激活“全局松弛模式”
+            // 我们通过调整物理引擎中的“理想键长”和“斥力系数”
+            // 让系统在接下来的几十帧内自动“展开”成能量最低的拓扑形状
+            document.getElementById('bond-log').innerText = "执行拓扑自适应优化...";
+
+            // 给系统一个初始动能冲量
+            atoms.forEach(a => {
+                a.vel.add(new THREE.Vector3(
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2,
+                    (Math.random() - 0.5) * 2
+                ));
+            });
+        };
+
+        // --- 更新物理循环中的力学模型 ---
+        function updatePhysics() {
+            let totalPotential = 0;
+            const k = 2.5; // 理想键长
+            const repelStr = 1.2; // 斥力强度
+
+            for (let i = 0; i < atoms.length; i++) {
+                const a = atoms[i];
+
+                // 【关键修复 1】如果原子 a 是静态的（爱心组成部分），它不应该被计算位移
+                if (a.isStatic) {
+                    a.vel.set(0, 0, 0); // 强制速度清零
+                    continue;
+                }
+
+                for (let j = 0; j < atoms.length; j++) {
+                    if (i === j) continue;
+                    const b = atoms[j];
+
+                    const diff = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
+                    const dist = diff.length() || 0.1;
+                    const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
+
+                    if (manualBonds.has(bondKey)) {
+                        // 引力
+                        const forceMag = (dist - k) * 0.15;
+                        const fVec = diff.clone().normalize().multiplyScalar(forceMag);
+                        a.vel.add(fVec);
+                        totalPotential += 0.5 * 0.15 * Math.pow(dist - k, 2);
+                    } else {
+                        // 斥力：即使 b 是静态的，它也会推开非静态的 a
+                        // 但 a 绝不会推开静态的 b（因为 b 在外层循环会被 skip）
+                        const forceMag = repelStr / (dist * dist);
+                        const fVec = diff.clone().normalize().multiplyScalar(forceMag);
+                        a.vel.sub(fVec);
+                        totalPotential += repelStr / dist;
+                    }
+                }
+
+                // 中心约束力
+                a.vel.add(a.mesh.position.clone().multiplyScalar(-0.01));
+
+                // 应用位移
+                a.mesh.position.add(a.vel);
+
+                // 动态阻尼
+                a.vel.multiplyScalar(0.85);
+            }
+
+            const energyVal = document.getElementById('energy-val');
+            if (energyVal) energyVal.innerText = totalPotential.toFixed(3);
+            renderBonds();
+        }
+
+        window.clearAll = function () {
+            atoms.forEach(a => scene.remove(a.mesh));
+            atoms = [];
+            manualBonds.clear();
+            selection = [];
+            updateFormula();
+        };
+
+        function updateFormula() {
+            const c = { 'C': 0, 'H': 0, 'O': 0 };
+            atoms.forEach(a => c[a.type]++);
+            let s = "";
+            ['C', 'H', 'O'].forEach(el => { if (c[el] > 0) s += `${el}${c[el] > 1 ? `<sub>${c[el]}</sub>` : ""}`; });
+            document.getElementById('formula-val').innerHTML = s || "Empty";
+        }
+
+        // --- 指令解析 ---
+        document.getElementById('cmd-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = e.target.value.trim().toLowerCase();
+                if (cmd === 'clear') clearAll();
+                else if (cmd.startsWith('add ')) {
+                    const parts = cmd.split(' ');
+                    const type = parts[1].toUpperCase();
+                    const num = parseInt(parts[2]) || 1;
+                    if (ATOM_DATA[type]) for (let i = 0; i < num; i++) addAtom(type);
+                }
+                e.target.value = '';
+            }
+        });
+
+        // function triggerZax() {
+        //     clearAll();
+
+        //     const zaxMsg = document.getElementById('zax-msg') || document.body; // 兼容处理
+        //     zaxMsg.style.opacity = "1";
+
+        //     const count = 100; // 增加采样点，线条更致密
+        //     for (let i = 0; i < count; i++) {
+        //         const t = (i / count) * Math.PI * 2;
+
+        //         // 更加饱满的爱心方程
+        //         const x = 16 * Math.pow(Math.sin(t), 3);
+        //         const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+
+        //         // 这里的 scale 决定大小，0.6 比较适合屏幕
+        //         const scale = 0.6;
+        //         const pos = new THREE.Vector3(x * scale, y * scale, 0);
+
+        //         // 【核心】第三个参数传 true，让原子在生成后不受斥力干扰
+        //         addAtom('O', pos, true);
+        //     }
+
+        //     // 3秒后恢复动力学（可选，让爱心慢慢散开，或者注释掉保持永恒）
+        //     // setTimeout(() => { atoms.forEach(a => a.isStatic = false); }, 3000);
+        // }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            updatePhysics();
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
 </body>
+
 </html>
-```
