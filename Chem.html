@@ -4,127 +4,185 @@
 <head>
     <meta charset="UTF-8">
     <title>Molecular Designer Pro - CQYC Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700;900&display=swap');
+
+        :root {
+            --glass-bg: rgba(13, 17, 23, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
         body {
             margin: 0;
             overflow: hidden;
-            background: #050505;
-            font-family: 'Fira Code', monospace;
-            color: #00ffcc;
+            background-color: #0d1117;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: #e6edf3;
+            user-select: none;
+            /* 防止频繁拖动时误选文字 */
         }
 
-        #top-panel {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-sizing: border-box;
+        .mono {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* 玻璃态 HUD 效果 */
+        .glass {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 修复后的霓虹发光文字（完美兼容 sub 下标） */
+        .neon-text {
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.6), 0 0 20px rgba(0, 255, 204, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* 修复化学式下标的渲染边界被截断的 Bug */
+        #formula-val sub {
+            font-size: 0.55em;
+            margin-left: 2px;
+            position: relative;
+            bottom: -0.25em;
+            /* 替代 vertical-align: sub 以防止破坏渲染框 */
+            vertical-align: baseline;
+            text-shadow: 0 0 8px rgba(0, 255, 204, 0.8);
+        }
+
+        /* 3D Canvas 置于底层 */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* 避免 UI 遮挡鼠标拖动三维空间 */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
             pointer-events: none;
         }
 
-        #formula-display {
-            font-size: 28px;
-            text-shadow: 0 0 10px #00ffcc;
-        }
-
-        #formula-display sub {
-            font-size: 16px;
-        }
-
-        #ui-left {
-            position: absolute;
-            top: 80px;
-            left: 20px;
-            background: rgba(0, 20, 15, 0.7);
-            padding: 15px;
-            border-left: 3px solid #00ffcc;
-        }
-
-        #cli-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 550px;
-            background: rgba(0, 20, 15, 0.9);
-            border: 1px solid #00ffcc;
-            padding: 10px;
-            display: flex;
-        }
-
-        #cmd-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: #fff;
-            outline: none;
-            font-size: 16px;
-        }
-
-        .btn-group {
-            position: absolute;
-            bottom: 80px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        button {
-            background: transparent;
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            padding: 8px 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button:hover {
-            background: #00ffcc;
-            color: #000;
-        }
-
-        #instruction {
-            position: absolute;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            color: #666;
+        /* 交互元素恢复指针事件 */
+        .pointer-events-auto {
+            pointer-events: auto;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="top-panel">
-        <div id="formula-display">Formula: <span id="formula-val">Empty</span></div>
-        <div style="text-align: right">
-            <div>ENERGY: <span id="energy-val">0.000</span> eV</div>
-            <div>SELECT: <span id="select-count">0</span>/2</div>
+    <!-- 底层氛围光晕 -->
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#00ffcc]/10 rounded-full blur-[120px]">
+        </div>
+        <div class="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[150px]">
         </div>
     </div>
 
-    <div id="ui-left">
-        <div style="color: #ffcc00; margin-bottom: 5px;">[ 实验室状态 ]</div>
-        <div id="bond-log">等待操作...</div>
+    <!-- 顶层全息 UI 面板 -->
+    <div class="ui-layer">
+
+        <!-- 顶部信息栏 -->
+        <div id="top-panel"
+            class="absolute top-6 left-6 right-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div class="glass px-6 py-4 flex items-center shadow-lg border-l-4 border-l-[#00ffcc] pointer-events-auto">
+                <div class="p-2 bg-[#00ffcc]/10 rounded-lg mr-4 border border-[#00ffcc]/20">
+                    <i data-lucide="flask-conical" class="w-6 h-6 text-[#00ffcc]"></i>
+                </div>
+                <div id="formula-display" class="text-xl md:text-2xl font-black tracking-tight mono text-white">
+                    Formula: <span id="formula-val" class="neon-text">Empty</span>
+                </div>
+            </div>
+
+            <div class="glass px-6 py-3 flex space-x-6 text-sm font-semibold mono shadow-lg pointer-events-auto">
+                <div class="flex flex-col">
+                    <span class="text-gray-500 text-[10px] tracking-wider mb-0.5">ENERGY</span>
+                    <div class="flex items-baseline text-blue-400">
+                        <span id="energy-val" class="text-lg mr-1 font-bold">0.000</span> eV
+                    </div>
+                </div>
+                <div class="w-px bg-white/10"></div>
+                <div class="flex flex-col">
+                    <span class="text-gray-500 text-[10px] tracking-wider mb-0.5">SELECT</span>
+                    <div class="flex items-baseline text-[#00ffcc]">
+                        <span id="select-count" class="text-lg mr-1 font-bold">0</span>/2
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 左侧状态栏 -->
+        <div id="ui-left"
+            class="absolute top-36 left-6 glass px-5 py-4 border-l-4 border-l-[#ffcc00] shadow-lg min-w-[200px] pointer-events-auto">
+            <div
+                class="text-[#ffcc00] text-xs font-bold tracking-widest uppercase mb-3 flex items-center drop-shadow-[0_0_8px_rgba(255,204,0,0.5)]">
+                <i data-lucide="activity" class="w-4 h-4 mr-2"></i> [ 实验室状态 ]
+            </div>
+            <div id="bond-log"
+                class="text-gray-300 text-sm font-medium mono bg-black/30 px-3 py-2 rounded-lg border border-white/5 shadow-inner">
+                等待操作...</div>
+        </div>
+
+        <!-- 隐藏彩蛋容器 (TriggerZax) -->
+        <div id="zax-msg"
+            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-1000 text-pink-500/10">
+            <i data-lucide="heart" class="w-96 h-96"></i>
+        </div>
+
+        <!-- 右下角控制按钮组 -->
+        <div class="absolute bottom-28 right-6 flex flex-col gap-3 pointer-events-auto">
+            <button onclick="deleteSelected()"
+                class="glass px-5 py-3 border border-[#ff3366]/40 text-[#ff3366] hover:bg-[#ff3366]/20 hover:border-[#ff3366]/80 hover:text-white transition-all duration-300 font-semibold shadow-lg group flex items-center justify-start min-w-[190px]">
+                <i data-lucide="trash-2" class="w-4 h-4 mr-3 group-hover:scale-110 transition-transform"></i> <span
+                    class="text-sm tracking-wide">[ 删除选中原子 ]</span>
+            </button>
+            <button onclick="autoLayout()"
+                class="glass px-5 py-3 border border-blue-500/40 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/80 hover:text-white transition-all duration-300 font-semibold shadow-lg group flex items-center justify-start min-w-[190px]">
+                <i data-lucide="network" class="w-4 h-4 mr-3 group-hover:scale-110 transition-transform"></i> <span
+                    class="text-sm tracking-wide">[ 自动拓扑排序 ]</span>
+            </button>
+            <button onclick="clearAll()"
+                class="glass px-5 py-3 border border-gray-500/40 text-gray-400 hover:bg-gray-500/20 hover:border-gray-500/80 hover:text-white transition-all duration-300 font-semibold shadow-lg group flex items-center justify-start min-w-[190px]">
+                <i data-lucide="eraser" class="w-4 h-4 mr-3 group-hover:scale-110 transition-transform"></i> <span
+                    class="text-sm tracking-wide">[ 全部清空 ]</span>
+            </button>
+        </div>
+
+        <!-- 底部中央控制台输入 -->
+        <div id="cli-container"
+            class="absolute bottom-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 pointer-events-auto flex flex-col">
+            <div
+                class="glass flex items-center px-5 py-3 shadow-2xl border border-[#00ffcc]/30 focus-within:border-[#00ffcc] focus-within:shadow-[0_0_20px_rgba(0,255,204,0.2)] transition-all bg-[#0d1117]/80 rounded-xl relative overflow-hidden group">
+                <div
+                    class="absolute left-0 top-0 bottom-0 w-1 bg-[#00ffcc]/30 group-focus-within:bg-[#00ffcc] transition-colors">
+                </div>
+                <i data-lucide="terminal-square"
+                    class="text-[#00ffcc] w-5 h-5 mr-3 group-focus-within:animate-pulse"></i>
+                <label class="text-[#00ffcc] font-bold text-sm mr-3 mono tracking-wider">COMMAND></label>
+                <input type="text" id="cmd-input" placeholder="add C 5 / clear" autocomplete="off"
+                    class="flex-1 bg-transparent border-none outline-none text-white font-medium mono placeholder-gray-600/80 text-sm md:text-base">
+            </div>
+            <div id="instruction"
+                class="text-center mt-3 text-[11px] md:text-xs text-gray-500 font-medium tracking-wide flex justify-center items-center space-x-2 opacity-70">
+                <i data-lucide="info" class="w-3.5 h-3.5"></i>
+                <span>左键点击原子选择 | 连续点击两原子成/断键 | Delete键删除 | 拖动旋转</span>
+            </div>
+        </div>
+
     </div>
 
-    <div id="instruction">左键点击原子选择 | 连续点击两原子成/断键 | Delete键删除 | 拖动旋转</div>
-
-    <div class="btn-group">
-        <button onclick="deleteSelected()" style="border-color: #ff3366; color: #ff3366;">[ 删除选中原子 ]</button>
-        <button onclick="autoLayout()">[ 自动拓扑排序 ]</button>
-        <button onclick="clearAll()">[ 全部清空 ]</button>
-    </div>
-
-    <div id="cli-container">
-        <label style="margin-right:10px;">COMMAND></label>
-        <input type="text" id="cmd-input" placeholder="add C 5 / clear" autocomplete="off">
-    </div>
-
+    <!-- 模块导入配置 -->
     <script type="importmap">
     {
         "imports": {
@@ -132,8 +190,9 @@
             "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
         }
     }
-</script>
+    </script>
 
+    <!-- 原有物理引擎逻辑核心区 -->
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
@@ -146,7 +205,9 @@
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setClearColor(0x000000, 0);
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
@@ -175,6 +236,9 @@
         window.addEventListener('mousedown', (e) => {
             if (e.button !== 0) return; // 仅左键点击
 
+            // 如果点击在 UI 层上，不触发三维相交检测
+            if (e.target.closest('.pointer-events-auto')) return;
+
             mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
 
@@ -189,6 +253,9 @@
         });
 
         window.addEventListener('keydown', (e) => {
+            // 防止在输入命令时误删
+            if (document.activeElement === document.getElementById('cmd-input')) return;
+
             if (e.key === 'Delete' || e.key === 'Backspace') {
                 deleteSelected();
             }
@@ -260,55 +327,6 @@
             document.getElementById('bond-log').innerText = "原子已移除";
         };
 
-        // // --- 物理引擎 ---
-        // function updatePhysics() {
-        //     let potentialE = 0;
-        //     let kineticE = 0;
-
-        //     for (let i = 0; i < atoms.length; i++) {
-        //         const a = atoms[i];
-
-        //         // 处理自动排序引力
-        //         if (a.targetPos) {
-        //             const diff = new THREE.Vector3().subVectors(a.targetPos, a.mesh.position);
-        //             a.vel.add(diff.multiplyScalar(0.05));
-        //             if (diff.length() < 0.1) a.targetPos = null;
-        //         }
-
-        //         // 原子间力
-        //         for (let j = i + 1; j < atoms.length; j++) {
-        //             const b = atoms[j];
-        //             const diff = new THREE.Vector3().subVectors(b.mesh.position, a.mesh.position);
-        //             const dist = diff.length();
-        //             const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
-
-        //             if (manualBonds.has(bondKey)) {
-        //                 // 键合引力
-        //                 const force = (dist - 2.5) * 0.1;
-        //                 const fVec = diff.clone().normalize().multiplyScalar(force);
-        //                 a.vel.add(fVec);
-        //                 b.vel.sub(fVec);
-        //                 potentialE += Math.abs(force) * 20;
-        //             } else {
-        //                 // 斥力
-        //                 const minDist = a.radius + b.radius + 1.5;
-        //                 if (dist < minDist) {
-        //                     const fVec = diff.clone().normalize().multiplyScalar((minDist - dist) * 0.05);
-        //                     a.vel.sub(fVec);
-        //                     b.vel.add(fVec);
-        //                 }
-        //             }
-        //         }
-
-        //         a.mesh.position.add(a.vel);
-        //         a.vel.multiplyScalar(0.9);
-        //         kineticE += 0.5 * a.mass * a.vel.lengthSq();
-        //     }
-
-        //     document.getElementById('energy-val').innerText = (kineticE + potentialE).toFixed(3);
-        //     renderBonds();
-        // }
-
         function renderBonds() {
             bondGroup.clear();
             const mat = new THREE.MeshPhongMaterial({ color: 0x00ffcc, transparent: true, opacity: 0.5 });
@@ -325,7 +343,6 @@
                 }
             });
         }
-
 
         // --- 基础功能 ---
         window.addAtom = function (type, pos = null, isStatic = false) {
@@ -363,7 +380,7 @@
         window.autoLayout = function () {
             if (atoms.length === 0) return;
 
-            // 1. 初始化一个松散的随机三维分布（作为模拟退火的起始状态）
+            // 1. 初始化一个松散的随机三维分布
             atoms.forEach(a => {
                 a.mesh.position.add(new THREE.Vector3(
                     (Math.random() - 0.5) * 5,
@@ -372,9 +389,6 @@
                 ));
             });
 
-            // 2. 这里的逻辑不再是“瞬间移动”，而是激活“全局松弛模式”
-            // 我们通过调整物理引擎中的“理想键长”和“斥力系数”
-            // 让系统在接下来的几十帧内自动“展开”成能量最低的拓扑形状
             document.getElementById('bond-log').innerText = "执行拓扑自适应优化...";
 
             // 给系统一个初始动能冲量
@@ -396,7 +410,6 @@
             for (let i = 0; i < atoms.length; i++) {
                 const a = atoms[i];
 
-                // 【关键修复 1】如果原子 a 是静态的（爱心组成部分），它不应该被计算位移
                 if (a.isStatic) {
                     a.vel.set(0, 0, 0); // 强制速度清零
                     continue;
@@ -411,14 +424,11 @@
                     const bondKey = `${Math.min(a.id, b.id)}-${Math.max(a.id, b.id)}`;
 
                     if (manualBonds.has(bondKey)) {
-                        // 引力
                         const forceMag = (dist - k) * 0.15;
                         const fVec = diff.clone().normalize().multiplyScalar(forceMag);
                         a.vel.add(fVec);
                         totalPotential += 0.5 * 0.15 * Math.pow(dist - k, 2);
                     } else {
-                        // 斥力：即使 b 是静态的，它也会推开非静态的 a
-                        // 但 a 绝不会推开静态的 b（因为 b 在外层循环会被 skip）
                         const forceMag = repelStr / (dist * dist);
                         const fVec = diff.clone().normalize().multiplyScalar(forceMag);
                         a.vel.sub(fVec);
@@ -472,31 +482,7 @@
             }
         });
 
-        function triggerZax() {
-            clearAll();
 
-            const zaxMsg = document.getElementById('zax-msg') || document.body; // 兼容处理
-            zaxMsg.style.opacity = "1";
-
-            const count = 100; // 增加采样点，线条更致密
-            for (let i = 0; i < count; i++) {
-                const t = (i / count) * Math.PI * 2;
-
-                // 更加饱满的爱心方程
-                const x = 16 * Math.pow(Math.sin(t), 3);
-                const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-
-                // 这里的 scale 决定大小，0.6 比较适合屏幕
-                const scale = 0.6;
-                const pos = new THREE.Vector3(x * scale, y * scale, 0);
-
-                // 【核心】第三个参数传 true，让原子在生成后不受斥力干扰
-                addAtom('O', pos, true);
-            }
-
-            // 3秒后恢复动力学（可选，让爱心慢慢散开，或者注释掉保持永恒）
-            // setTimeout(() => { atoms.forEach(a => a.isStatic = false); }, 3000);
-        }
 
         function animate() {
             requestAnimationFrame(animate);
@@ -511,6 +497,9 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // 渲染 Lucide 图标
+        lucide.createIcons();
 
     </script>
 </body>
