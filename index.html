@@ -42,17 +42,22 @@
             color: var(--luogu-color);
         }
 
-        /* 卡片悬浮特效 */
+        /* 优化后的项目卡片与悬浮特效 */
         .project-card {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(145deg, rgba(22, 27, 34, 0.7) 0%, rgba(13, 17, 23, 0.9) 100%);
+            border: 1px solid var(--glass-border);
         }
 
         .project-card:hover {
-            transform: translateY(-6px);
-            border-color: #3b82f6;
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.3);
+            transform: translateY(-8px);
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
         }
+
+        /* 针对不同卡片的定制边框高亮 */
+        .hover-border-blue:hover { border-color: rgba(59, 130, 246, 0.5); box-shadow: 0 10px 40px -10px rgba(59, 130, 246, 0.25); }
+        .hover-border-purple:hover { border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 10px 40px -10px rgba(168, 85, 247, 0.25); }
+        .hover-border-emerald:hover { border-color: rgba(16, 185, 129, 0.5); box-shadow: 0 10px 40px -10px rgba(16, 185, 129, 0.25); }
 
         .friend-link {
             transition: all 0.3s ease;
@@ -74,15 +79,8 @@
 
         /* 终端打字机光标动画 */
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         .cursor-blink::after {
@@ -112,12 +110,10 @@
                     <span class="text-gray-500 text-2xl md:text-3xl font-normal ml-1">/ Stdin</span>
                 </h1>
                 <div class="flex flex-wrap gap-3 mt-4">
-                    <span
-                        class="glass px-3 py-1.5 text-xs mono text-green-400 border-green-500/20 bg-green-500/5 flex items-center">
+                    <span class="glass px-3 py-1.5 text-xs mono text-green-400 border-green-500/20 bg-green-500/5 flex items-center">
                         <i data-lucide="hash" class="w-3 h-3 mr-1"></i>CQ_G2030_OIer
                     </span>
-                    <span
-                        class="glass px-3 py-1.5 text-xs mono text-blue-400 border-blue-500/20 bg-blue-500/5 flex items-center">
+                    <span class="glass px-3 py-1.5 text-xs mono text-blue-400 border-blue-500/20 bg-blue-500/5 flex items-center">
                         <i data-lucide="hash" class="w-3 h-3 mr-1"></i>Blue_Rank_Expert
                     </span>
                 </div>
@@ -191,25 +187,21 @@
                         的时空裂隙中寻找最优解；而在现实世界，我是各种节奏与方块的重度玩家。
                     </p>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                        <div
-                            class="flex items-center space-x-4 bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-xl border border-white/5">
+                        <div class="flex items-center space-x-4 bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-xl border border-white/5">
                             <div class="p-2.5 bg-pink-500/10 rounded-lg">
                                 <i data-lucide="music" class="text-pink-400 w-5 h-5"></i>
                             </div>
                             <div>
-                                <div class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">ADOFAI
-                                </div>
+                                <div class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">ADOFAI</div>
                                 <div class="text-sm font-medium text-white">Rhythm pupil</div>
                             </div>
                         </div>
-                        <div
-                            class="flex items-center space-x-4 bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-xl border border-white/5">
+                        <div class="flex items-center space-x-4 bg-white/5 hover:bg-white/10 transition-colors p-4 rounded-xl border border-white/5">
                             <div class="p-2.5 bg-blue-500/10 rounded-lg">
                                 <i data-lucide="layout-grid" class="text-blue-400 w-5 h-5"></i>
                             </div>
                             <div>
-                                <div class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">TETRIO
-                                </div>
+                                <div class="text-[11px] text-gray-400 font-semibold tracking-wider uppercase">TETRIO</div>
                                 <div class="text-sm font-medium text-white">30 APM Player</div>
                             </div>
                         </div>
@@ -217,8 +209,7 @@
                 </div>
 
                 <!-- 终端风格 Profile -->
-                <div
-                    class="glass p-6 mono text-xs leading-loose bg-gradient-to-b from-[#0d1117] to-blue-900/10 border-t-0 flex flex-col">
+                <div class="glass p-6 mono text-xs leading-loose bg-gradient-to-b from-[#0d1117] to-blue-900/10 border-t-0 flex flex-col">
                     <div class="flex space-x-2 mb-4 border-b border-gray-800 pb-3">
                         <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
@@ -227,8 +218,7 @@
                     <div class="text-blue-400 font-bold mb-3">~ ./user_profile.sh <span class="cursor-blink"></span>
                     </div>
                     <div class="space-y-1.5 text-gray-300">
-                        <div><span class="text-gray-500 mr-2">STATUS:</span><span
-                                class="text-green-400 font-bold">Active</span></div>
+                        <div><span class="text-gray-500 mr-2">STATUS:</span><span class="text-green-400 font-bold">Active</span></div>
                         <div><span class="text-gray-500 mr-2">LOC:</span>Chongqing, CN</div>
                         <div><span class="text-gray-500 mr-2">LANGUAGE:</span>C++, JavaScript</div>
                         <div><span class="text-gray-500 mr-2">IDE:</span>VS Code</div>
@@ -238,79 +228,96 @@
             </div>
         </section>
 
-        <!-- Projects Section -->
+        <!-- Projects Section (深度美化与修复版) -->
         <section class="mb-16">
             <h2 class="text-2xl font-bold mb-6 flex items-center tracking-tight">
                 <i data-lucide="folder-git-2" class="mr-3 text-blue-500 w-6 h-6"></i> Projects
             </h2>
-            <!-- 合并至同一个 Grid 中以实现完美的响应式排列 -->
+            
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                <!-- 项目 1 -->
-                <a href="./Chem.html" target="_blank" class="block glass p-6 project-card flex flex-col group">
-                    <div class="flex justify-between items-start mb-5">
-                        <div class="p-2 bg-blue-500/10 rounded-lg">
-                            <i data-lucide="code-xml"
-                                class="text-blue-400 w-5 h-5 group-hover:text-blue-300 transition-colors"></i>
+                <!-- 项目 1: 有机化学分子渲染器 (蓝色主题) -->
+                <a href="./Chem.html" target="_blank" class="block glass p-6 project-card hover-border-blue flex flex-col group relative overflow-hidden">
+                    <!-- 背景氛围光 -->
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-blue-500/10 blur-[40px] rounded-full group-hover:bg-blue-500/20 transition-all duration-500"></div>
+                    
+                    <div class="flex justify-between items-start mb-5 relative z-10">
+                        <div class="p-2.5 bg-blue-500/10 rounded-xl border border-blue-500/20 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="flask-conical" class="text-blue-400 w-5 h-5"></i>
                         </div>
-                        <span
-                            class="text-[10px] mono bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/20 font-semibold">JavaScript</span>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] mono bg-blue-500/10 text-blue-300 px-2.5 py-1 rounded-full border border-blue-500/20 font-semibold tracking-wide">Chemistry</span>
+                            <span class="text-[10px] mono bg-gray-700/30 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600/30 font-semibold">JS</span>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg mb-2 text-white group-hover:text-blue-400 transition-colors">有机化学分子渲染器
-                    </h4>
-                    <p class="text-gray-400 mb-6 text-sm leading-relaxed flex-grow">支持添加原子，连键，断键以及自适应的空间排序。</p>
-                    <div
-                        class="flex justify-between items-center text-gray-500 mt-auto pt-4 border-t border-gray-700/50">
-                        <div class="flex space-x-3">
-                            <i data-lucide="github" class="w-4 h-4 hover:text-white transition-colors"></i>
-                            <i data-lucide="star" class="w-4 h-4 hover:text-yellow-400 transition-colors"></i>
+                    <h4 class="font-bold text-lg mb-2 text-gray-100 group-hover:text-blue-400 transition-colors relative z-10">有机化学分子渲染器</h4>
+                    <p class="text-gray-400 mb-8 text-[14px] leading-relaxed flex-grow relative z-10 group-hover:text-gray-300 transition-colors">
+                        支持添加原子，连键，断键以及自适应的空间排序，动态呈现化学分子结构。
+                    </p>
+                    <div class="flex justify-between items-center text-gray-500 mt-auto pt-5 border-t border-gray-700/50 relative z-10">
+                        <div class="flex space-x-4">
+                            <div class="flex items-center hover:text-white transition-colors"><i data-lucide="github" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Code</span></div>
+                            <div class="flex items-center hover:text-yellow-400 transition-colors"><i data-lucide="star" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Star</span></div>
                         </div>
-                        <i data-lucide="external-link" class="w-4 h-4 group-hover:text-blue-400 transition-colors"></i>
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-gray-400 group-hover:text-blue-400 transition-colors"></i>
+                        </div>
                     </div>
                 </a>
 
-                <!-- 项目 2 -->
-                <a href="./apps/oiersearch.html" target="_blank"
-                    class="block glass p-6 project-card flex flex-col group">
-                    <div class="flex justify-between items-start mb-5">
-                        <div class="p-2 bg-blue-500/10 rounded-lg">
-                            <i data-lucide="code-xml"
-                                class="text-blue-400 w-5 h-5 group-hover:text-blue-300 transition-colors"></i>
+                <!-- 项目 2: OIer Searcher (紫色主题) -->
+                <a href="./apps/oiersearch.html" target="_blank" class="block glass p-6 project-card hover-border-purple flex flex-col group relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-purple-500/10 blur-[40px] rounded-full group-hover:bg-purple-500/20 transition-all duration-500"></div>
+                    
+                    <div class="flex justify-between items-start mb-5 relative z-10">
+                        <div class="p-2.5 bg-purple-500/10 rounded-xl border border-purple-500/20 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="terminal" class="text-purple-400 w-5 h-5"></i>
                         </div>
-                        <span
-                            class="text-[10px] mono bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/20 font-semibold">JavaScript</span>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] mono bg-purple-500/10 text-purple-300 px-2.5 py-1 rounded-full border border-purple-500/20 font-semibold tracking-wide">Tool</span>
+                            <span class="text-[10px] mono bg-gray-700/30 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600/30 font-semibold">JS</span>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg mb-2 text-white group-hover:text-blue-400 transition-colors">OIer
-                        Searcher</h4>
-                    <p class="text-gray-400 mb-6 text-sm leading-relaxed flex-grow">OIer-db 自定义脚本生成器。</p>
-                    <div
-                        class="flex justify-between items-center text-gray-500 mt-auto pt-4 border-t border-gray-700/50">
-                        <div class="flex space-x-3">
-                            <i data-lucide="github" class="w-4 h-4 hover:text-white transition-colors"></i>
-                            <i data-lucide="star" class="w-4 h-4 hover:text-yellow-400 transition-colors"></i>
+                    <h4 class="font-bold text-lg mb-2 text-gray-100 group-hover:text-purple-400 transition-colors relative z-10">OIer Searcher</h4>
+                    <p class="text-gray-400 mb-8 text-[14px] leading-relaxed flex-grow relative z-10 group-hover:text-gray-300 transition-colors">
+                        OIer-db 自定义脚本生成器，提供高效的数据检索与选手信息分析工具。
+                    </p>
+                    <div class="flex justify-between items-center text-gray-500 mt-auto pt-5 border-t border-gray-700/50 relative z-10">
+                        <div class="flex space-x-4">
+                            <div class="flex items-center hover:text-white transition-colors"><i data-lucide="github" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Code</span></div>
+                            <div class="flex items-center hover:text-yellow-400 transition-colors"><i data-lucide="star" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Star</span></div>
                         </div>
-                        <i data-lucide="external-link" class="w-4 h-4 group-hover:text-blue-400 transition-colors"></i>
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-gray-400 group-hover:text-purple-400 transition-colors"></i>
+                        </div>
                     </div>
                 </a>
-                <a href="./badminton.html" target="_blank" class="block glass p-6 project-card flex flex-col group">
-                    <div class="flex justify-between items-start mb-5">
-                        <div class="p-2 bg-blue-500/10 rounded-lg">
-                            <i data-lucide="code-xml"
-                                class="text-blue-400 w-5 h-5 group-hover:text-blue-300 transition-colors"></i>
+
+                <!-- 项目 3: Badminton Game (翠绿主题) -->
+                <a href="./badminton.html" target="_blank" class="block glass p-6 project-card hover-border-emerald flex flex-col group relative overflow-hidden">
+                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-500/10 blur-[40px] rounded-full group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+                    
+                    <div class="flex justify-between items-start mb-5 relative z-10">
+                        <div class="p-2.5 bg-emerald-500/10 rounded-xl border border-emerald-500/20 group-hover:scale-110 transition-transform duration-300">
+                            <i data-lucide="gamepad-2" class="text-emerald-400 w-5 h-5"></i>
                         </div>
-                        <span
-                            class="text-[10px] mono bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-full border border-blue-500/20 font-semibold">JavaScript</span>
+                        <div class="flex gap-2">
+                            <span class="text-[10px] mono bg-emerald-500/10 text-emerald-300 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold tracking-wide">Game</span>
+                            <span class="text-[10px] mono bg-gray-700/30 text-gray-300 px-2.5 py-1 rounded-full border border-gray-600/30 font-semibold">Canvas</span>
+                        </div>
                     </div>
-                    <h4 class="font-bold text-lg mb-2 text-white group-hover:text-blue-400 transition-colors">Badminton
-                        Game</h4>
-                    <p class="text-gray-400 mb-6 text-sm leading-relaxed flex-grow">2D 羽毛球小游戏。</p>
-                    <div
-                        class="flex justify-between items-center text-gray-500 mt-auto pt-4 border-t border-gray-700/50">
-                        <div class="flex space-x-3">
-                            <i data-lucide="github" class="w-4 h-4 hover:text-white transition-colors"></i>
-                            <i data-lucide="star" class="w-4 h-4 hover:text-yellow-400 transition-colors"></i>
+                    <h4 class="font-bold text-lg mb-2 text-gray-100 group-hover:text-emerald-400 transition-colors relative z-10">Badminton Game</h4>
+                    <p class="text-gray-400 mb-8 text-[14px] leading-relaxed flex-grow relative z-10 group-hover:text-gray-300 transition-colors">
+                        2D 羽毛球小游戏，包含基础的物理碰撞逻辑与趣味互动。
+                    </p>
+                    <div class="flex justify-between items-center text-gray-500 mt-auto pt-5 border-t border-gray-700/50 relative z-10">
+                        <div class="flex space-x-4">
+                            <div class="flex items-center hover:text-white transition-colors"><i data-lucide="github" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Code</span></div>
+                            <div class="flex items-center hover:text-yellow-400 transition-colors"><i data-lucide="star" class="w-4 h-4 mr-1.5"></i><span class="text-xs">Star</span></div>
                         </div>
-                        <i data-lucide="external-link" class="w-4 h-4 group-hover:text-blue-400 transition-colors"></i>
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-gray-400 group-hover:text-emerald-400 transition-colors"></i>
+                        </div>
                     </div>
                 </a>
 
@@ -324,42 +331,27 @@
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <a href="#" class="glass p-4 friend-link flex items-center space-x-3 group">
-                    <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg">
-                    </div>
-                    <span
-                        class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">XiangXunyi</span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg"></div>
+                    <span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">XiangXunyi</span>
                 </a>
                 <a href="#" class="glass p-4 friend-link flex items-center space-x-3 group">
-                    <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg">
-                    </div>
-                    <span
-                        class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">ZengMaoyuan</span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg"></div>
+                    <span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">ZengMaoyuan</span>
                 </a>
                 <a href="#" class="glass p-4 friend-link flex items-center space-x-3 group">
-                    <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg">
-                    </div>
-                    <span
-                        class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">WangYueheng</span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg"></div>
+                    <span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">WangYueheng</span>
                 </a>
                 <a href="#" class="glass p-4 friend-link flex items-center space-x-3 group">
-                    <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg">
-                    </div>
-                    <span
-                        class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">YangBaicheng</span>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500 group-hover:scale-110 group-hover:rotate-6 transition duration-300 shadow-lg"></div>
+                    <span class="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">YangBaicheng</span>
                 </a>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer
-            class="text-center py-10 border-t border-gray-800/50 text-gray-600 text-xs mono uppercase tracking-widest">
-            Designed by <span
-                class="text-gray-400 font-semibold hover:text-blue-400 transition-colors cursor-default">tanjiaqi @
-                2026</span>
+        <footer class="text-center py-10 border-t border-gray-800/50 text-gray-600 text-xs mono uppercase tracking-widest">
+            Designed by <span class="text-gray-400 font-semibold hover:text-blue-400 transition-colors cursor-default">tanjiaqi @ 2026</span>
         </footer>
     </div>
 
